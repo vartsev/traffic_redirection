@@ -10,29 +10,29 @@ namespace configuration
 class ConfigurationManager
 {
 public:
+	static const std::string CONFIG_PATH;
 	static const std::string CONFIG_NAME;
 
+	static const std::string LOG_TO_FILE_PARAMETER_NAME;
+	static const std::string LOG_TO_CONSOLE_PARAMETER_NAME;
+	static const std::string RECONNECT_INTERVAL_PARAMETER_NAME;
+
 	static const std::string DIRECTIONS_PARAMETER_NAME;
-	static const std::string PROTOCOL_PARAMETER_NAME;
 	static const std::string SRC_PARAMETER_NAME;
 	static const std::string DST_PARAMETER_NAME;
 
+	static const std::string PROTOCOL_PARAMETER_NAME;
+	static const std::string IP_PARAMETER_NAME;
+	static const std::string PORT_PARAMETER_NAME;
+
 	static const std::string UDP_PARAMETER_NAME;
-	static const std::string TCP_PARAMETER_NAME;
+	static const std::string TCP_CLIENT_PARAMETER_NAME;
+	static const std::string TCP_SERVER_PARAMETER_NAME;
 
-	static const std::string PARTNER_IP_PARAMETER_NAME;
-	static const std::string PORT_FOR_WRITE_PARAMETER_NAME;
-	static const std::string PORT_FOR_READ_PARAMETER_NAME;
-
-	static const std::string DEFAULT_PARTNER_IP;
-	static const std::string DEFAULT_PORT_FOR_WRITE;
-	static const std::string DEFAULT_PORT_FOR_READ;
-
-	static const std::string UDP_TO_TCP;
-	static const std::string TCP_TO_UDP;
-
-	static const std::string RECONNECT_TIME_PARAMETER_NAME;
-	static const std::string LOG_TO_CONSOLE_PARAMETER_NAME;
+	static const std::string DEFAULT_IP;
+	static const std::string DEFAULT_PORT;
+	static const std::string DEFAULT_INTERVAL;
+	static const std::string DEFAULT_LOGGING;
 
 public:
     static ConfigurationManager& getInstance()
@@ -44,18 +44,18 @@ public:
 	boost::property_tree::ptree readFromFile();
 	void writeToFile( const boost::property_tree::ptree& root);
 
-	bool isLogging();
-	bool isUdpToTcp();
-	bool isTcpToUdp();
+	bool isLoggingToFile();
+	bool isLoggingToConsole();
 
 private:
 	ConfigurationManager();
 	~ConfigurationManager();
 
+	std::string getConfigPath();
+
 private:
-	bool logState_;
-	bool udpToTcp_;
-	bool tcpToUdp_;
+	bool logToFile_;
+	bool logToConsole_;
 };
 
 } /* namespace configuration */

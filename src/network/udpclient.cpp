@@ -103,7 +103,7 @@ void UdpClient::sendPacket( const std::string& packet)
 	if( !isInit_)
 		return;
 
-	if( configuration::ConfigurationManager::getInstance().isLogging())
+	if( configuration::ConfigurationManager::getInstance().isLoggingToConsole())
 		std::cout << boost::posix_time::microsec_clock::local_time() << " sendUdpPacket addr: " << ip_ << " size: " << packet.size() << std::endl;
 
 	socketPtr_->send_to( boost::asio::buffer( packet), partnerEndpoint_);

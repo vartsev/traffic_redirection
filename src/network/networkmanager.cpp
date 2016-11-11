@@ -90,16 +90,16 @@ bool NetworkManager::receiveTcpPacket( const std::string& packet)
 
 void NetworkManager::sendUdpPacket( const std::string& packet)
 {
-	if( !configuration::ConfigurationManager::getInstance().isTcpToUdp())
-		return;
+//	if( !configuration::ConfigurationManager::getInstance().isTcpToUdp())
+//		return;
 
 	udpClient_.sendPacket( packet);
 }
 
 void NetworkManager::sendTcpPacket( const std::string& packet)
 {
-	if( !configuration::ConfigurationManager::getInstance().isUdpToTcp())
-		return;
+//	if( !configuration::ConfigurationManager::getInstance().isUdpToTcp())
+//		return;
 
 	for( TcpClientVector::iterator it = tcpClientVector_.begin(); it != tcpClientVector_.end(); ++it)
 		it->get()->sendPacket( packet);

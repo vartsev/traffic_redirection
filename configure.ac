@@ -37,6 +37,12 @@ AC_CHECK_LIB([boost_system], [main], [],
 	exit -1
 ])
 
+AC_CHECK_LIB([boost_filesystem], [main], [], 
+[
+	echo "boost_filesystem failure."
+	exit -1
+])
+
 AC_CHECK_LIB([boost_thread], [main], [],
 [ 
 	echo "boost_thread failure." 

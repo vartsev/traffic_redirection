@@ -1,44 +1,49 @@
-[
-  {
-	"Source":
-	{
-	  "Protocol": "udp",
-	  "Ip": "127.0.0.1",
-	  "Port": "44000"
-	},
-	"Distinations":
-	[
+{
+	"LoggingToFile": "0",
+	"LoggingToConsole": "0",
+	"ReconnectionInterval(millisecond)": "100",
+	"Directions": [
 	  {
-		"Protocol": "udp",
-		"Ip": "127.0.0.1",
-		"Port": "44001"
+		"Source":
+		{
+		  "Protocol": "udp",
+		  "Ip": "127.0.0.1",
+		  "Port": "44000"
+		},
+		"Destinations":
+		[
+		  {
+			"Protocol": "udp",
+			"Ip": "127.0.0.1",
+			"Port": "44001"
+		  },
+		  {
+			"Protocol": "tcp_client",
+			"Ip": "127.0.0.1",
+			"Port": "44001"
+		  }
+		]
 	  },
 	  {
-		"Protocol": "tcp",
-		"Ip": "127.0.0.1",
-		"Port": "44001"
+		"Source":
+		{
+		  "Protocol": "tcp_client",
+		  "Ip": "127.0.0.1",
+		  "Port": "44000"
+		},
+		"Destinations":
+		[
+		  {
+			"Protocol": "udp",
+			"Ip": "127.0.0.1",
+			"Port": "44001"
+		  },
+		  {
+			"Protocol": "tcp_server",
+			"Ip": "127.0.0.1",
+			"Port": "44001"
+		  }
+		]
 	  }
 	]
-  },
-  {
-	"Source":
-	{
-	  "Protocol": "tcp",
-	  "Ip": "127.0.0.1",
-	  "Port": "44000"
-	},
-	"Distinations":
-	[
-	  {
-		"Protocol": "udp",
-		"Ip": "127.0.0.1",
-		"Port": "44001"
-	  },
-	  {
-		"Protocol": "tcp",
-		"Ip": "127.0.0.1",
-		"Port": "44001"
-	  }
-	]
-  }
-]
+}
