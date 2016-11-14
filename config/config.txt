@@ -29,19 +29,14 @@
 		{
 		  "Protocol": "tcp_client",
 		  "Ip": "127.0.0.1",
-		  "Port": "44000"
+		  "Port": "44001"
 		},
 		"Destinations":
 		[
 		  {
 			"Protocol": "udp",
 			"Ip": "127.0.0.1",
-			"Port": "44001"
-		  },
-		  {
-			"Protocol": "tcp_server",
-			"Ip": "127.0.0.1",
-			"Port": "44001"
+			"Port": "44000"
 		  }
 		]
 	  }
