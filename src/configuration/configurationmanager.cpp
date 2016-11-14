@@ -45,7 +45,9 @@ boost::property_tree::ptree ConfigurationManager::readFromFile()
 
 	boost::property_tree::ptree root;
 	boost::property_tree::ptree array;
+	boost::property_tree::ptree arr;
 	boost::property_tree::ptree part;
+	boost::property_tree::ptree prt;
 
 	try
 	{
@@ -68,13 +70,18 @@ boost::property_tree::ptree ConfigurationManager::readFromFile()
 
 		array.clear();
 		part.clear();
-		part.add_child( SRC_PARAMETER_NAME, boost::property_tree::ptree( "192.168.0.99"));
-		part.add_child( DST_PARAMETER_NAME, boost::property_tree::ptree( "34000"));
+		prt.clear();
+		prt.add_child( PROTOCOL_PARAMETER_NAME, boost::property_tree::ptree( UDP_PARAMETER_NAME));
+		prt.add_child( IP_PARAMETER_NAME, boost::property_tree::ptree( DEFAULT_IP));
+		prt.add_child( PORT_PARAMETER_NAME, boost::property_tree::ptree( DEFAULT_PORT));
+		part.add_child( SRC_PARAMETER_NAME, prt);
+
+		arr.clear();
+		arr.push_back( std::make_pair("", prt));
+		part.add_child( DST_PARAMETER_NAME, arr);
+
 		array.push_back( std::make_pair("", part));
-		part.clear();
-		part.add_child( SRC_PARAMETER_NAME, boost::property_tree::ptree( "192.168.0.100"));
-		part.add_child( DST_PARAMETER_NAME, boost::property_tree::ptree( "34000"));
-		array.push_back( std::make_pair("", part));
+
 		root.add_child( DIRECTIONS_PARAMETER_NAME, array);
 
 		writeToFile( root);
