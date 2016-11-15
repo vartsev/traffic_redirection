@@ -29,7 +29,7 @@ bool UdpClient::init( const std::string& ipAddress, uint16_t portForWrite, uint1
 
 	try
 	{
-		boost::property_tree::ptree root = configuration::ConfigurationManager::getInstance().readFromFile();
+//		boost::property_tree::ptree root = configuration::ConfigurationManager::getInstance().readFromFile();
 
 		ip_ = ipAddress;
 		portForWrite_ = portForWrite;
@@ -103,8 +103,8 @@ void UdpClient::sendPacket( const std::string& packet)
 	if( !isInit_)
 		return;
 
-	if( configuration::ConfigurationManager::getInstance().isLoggingToConsole())
-		std::cout << boost::posix_time::microsec_clock::local_time() << " sendUdpPacket addr: " << ip_ << " size: " << packet.size() << std::endl;
+//	if( configuration::ConfigurationManager::getInstance().isLoggingToConsole())
+//		std::cout << boost::posix_time::microsec_clock::local_time() << " sendUdpPacket addr: " << ip_ << " size: " << packet.size() << std::endl;
 
 	socketPtr_->send_to( boost::asio::buffer( packet), partnerEndpoint_);
 }

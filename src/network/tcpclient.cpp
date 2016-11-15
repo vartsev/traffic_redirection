@@ -57,8 +57,8 @@ void TcpClient::connect()
 
 	if( error.value() != 0)
 	{
-		if( configuration::ConfigurationManager::getInstance().isLoggingToConsole())
-			std::cout <<  boost::posix_time::microsec_clock::local_time() <<" no connection! error: " << error.value() << std::endl;
+//		if( configuration::ConfigurationManager::getInstance().isLoggingToConsole())
+//			std::cout <<  boost::posix_time::microsec_clock::local_time() <<" no connection! error: " << error.value() << std::endl;
 		isConnected_ = false;
 		usleep( time_ * 1000);
 		connect();
@@ -119,8 +119,8 @@ void TcpClient::sendPacket( const std::string& packet)
 
 	try
 	{
-		if( configuration::ConfigurationManager::getInstance().isLoggingToConsole())
-			std::cout << boost::posix_time::microsec_clock::local_time() << " sendTcpPacket addr: " << ip_ << " size: " << packet.size() << std::endl;
+//		if( configuration::ConfigurationManager::getInstance().isLoggingToConsole())
+//			std::cout << boost::posix_time::microsec_clock::local_time() << " sendTcpPacket addr: " << ip_ << " size: " << packet.size() << std::endl;
 
 		boost::asio::async_write( *socketPtr_, boost::asio::buffer( packet),
 			boost::bind( &TcpClient::handleWriting, this, boost::asio::placeholders::error));

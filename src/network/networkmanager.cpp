@@ -26,7 +26,7 @@ bool NetworkManager::init()
 
 	try
 	{
-		boost::property_tree::ptree root = configuration::ConfigurationManager::getInstance().readFromFile();
+//		boost::property_tree::ptree root = configuration::ConfigurationManager::getInstance().readFromFile();
 
 //		std::string ipAddress = root.get_child( configuration::ConfigurationManager::UDP_PARAMETER_NAME).
 //								get_child( configuration::ConfigurationManager::PARTNER_IP_PARAMETER_NAME).
