@@ -1,11 +1,12 @@
 #ifndef NETWORKMANAGER_H_
 #define NETWORKMANAGER_H_
 
-#include <boost/shared_ptr.hpp>
-#include <vector>
-
+#include "configuration/configurationmanager.h"
 #include "tcpclient.h"
 #include "udpclient.h"
+
+#include <boost/shared_ptr.hpp>
+#include <vector>
 
 namespace network
 {
@@ -27,6 +28,7 @@ public:
 	void sendTcpPacket( const std::string& packet);
 
 private:
+	configuration::ConfigurationManager configurationManager_;
 	UdpClient udpClient_;
 	TcpClientVector tcpClientVector_;
 };

@@ -1,7 +1,7 @@
 #ifndef CONFIGURATIONKEEPER_H_
 #define CONFIGURATIONKEEPER_H_
 
-#include "trafficdirection.h"
+#include "network/trafficdirection.h"
 
 #include <boost/thread.hpp>
 #include <boost/property_tree/ptree_fwd.hpp>
@@ -11,7 +11,6 @@
 
 namespace configuration
 {
-	typedef std::vector< TrafficDirection> TrafficDirectionVector;
 
 class ConfigurationManager
 {
@@ -57,9 +56,8 @@ public:
 	uint16_t getReconnectionInterval();
 	void saveReconnectionInterval( uint16_t inerval);
 
-	void addTrafficDirection( const TrafficDirection& trafficDirection);
-	void deleteTrafficDirection( const TrafficDirection& trafficDirection);
-	TrafficDirectionVector& getTrafficDirectionVector();
+	void addTrafficDirection( const network::TrafficDirection& trafficDirection);
+	void deleteTrafficDirection( const network::TrafficDirection& trafficDirection);
 
 private:
 	const boost::property_tree::ptree& readFromFile( const std::string& configPath);
@@ -72,7 +70,6 @@ private:
 	uint16_t reconnectionInterval_;
 	std::string configPath_;
 
-	TrafficDirectionVector trafficDirectionVector_;
 	boost::property_tree::ptree configurationTree_;
 	boost::mutex mutex_;
 };

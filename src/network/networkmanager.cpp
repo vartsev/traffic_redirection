@@ -12,6 +12,11 @@ namespace network
 
 NetworkManager::NetworkManager()
 {
+	std::cout << "interval: " << configurationManager_.getReconnectionInterval() << std::endl;
+	configurationManager_.saveLoggingToFileState( true);
+	configurationManager_.saveLoggingToConsoleState( true);
+	configurationManager_.saveReconnectionInterval( 400);
+
 	init();
 }
 
