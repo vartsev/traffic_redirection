@@ -8,8 +8,8 @@ libtrafficredirector_la_SOURCES = 							\
 		network/udpclient.h									\
 		network/udpclient.cpp								\
 		\
-		configuration/configurationkeeper.h					\
-		configuration/configurationkeeper.cpp				\
+		configuration/trafficdirection.h					\
+		configuration/trafficdirection.cpp					\
 		configuration/configurationmanager.h				\
 		configuration/configurationmanager.cpp
 

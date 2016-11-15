@@ -1,59 +1,191 @@
 #include "configurationmanager.h"
+
 #include <boost/lexical_cast.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <fstream>
 
 namespace configuration
 {
 
-ConfigurationManager::ConfigurationManager()
-{
+const std::string ConfigurationManager::CONFIG_PATH = "/traffic_redirection/";
+const std::string ConfigurationManager::CONFIG_NAME = "config.txt";
 
+const std::string ConfigurationManager::LOG_TO_FILE_PARAMETER_NAME = "LoggingToFile";
+const std::string ConfigurationManager::LOG_TO_CONSOLE_PARAMETER_NAME = "LoggingToConsole";
+const std::string ConfigurationManager::RECONNECT_INTERVAL_PARAMETER_NAME = "ReconnectionInterval(millisecond)";
+
+const std::string ConfigurationManager::DIRECTIONS_PARAMETER_NAME = "Directions";
+const std::string ConfigurationManager::SRC_PARAMETER_NAME = "Source";
+const std::string ConfigurationManager::DST_PARAMETER_NAME = "Destinations";
+
+const std::string ConfigurationManager::PROTOCOL_PARAMETER_NAME = "Protocol";
+const std::string ConfigurationManager::IP_PARAMETER_NAME = "Ip";
+const std::string ConfigurationManager::PORT_PARAMETER_NAME = "Port";
+
+const std::string ConfigurationManager::UDP_PARAMETER_NAME = "udp";
+const std::string ConfigurationManager::TCP_CLIENT_PARAMETER_NAME = "tcp_client";
+const std::string ConfigurationManager::TCP_SERVER_PARAMETER_NAME = "tcp_server";
+
+const std::string ConfigurationManager::DEFAULT_IP = "127.0.0.1";
+const std::string ConfigurationManager::DEFAULT_PORT = "44000";
+const std::string ConfigurationManager::DEFAULT_INTERVAL = "100";
+const std::string ConfigurationManager::DEFAULT_LOGGING = "0";
+
+ConfigurationManager::ConfigurationManager():
+		logToFile_( false),
+		logToConsole_( true),
+		reconnectionInterval_( 100),
+		configPath_( getConfigPath())
+{
+	readFromFile( configPath_);
 }
 
 ConfigurationManager::~ConfigurationManager()
 {
-
 }
 
-bool ConfigurationManager::getLoggingToFileState()
+const boost::property_tree::ptree& ConfigurationManager::readFromFile( const std::string& configPath)
 {
-	return configurationKeeper_.isLoggingToFile();
+	boost::lock_guard<boost::mutex> lock( mutex_);
+	std::ifstream configFile( configPath.c_str(), std::ifstream::in);
+
+	boost::property_tree::ptree array;
+	boost::property_tree::ptree arr;
+	boost::property_tree::ptree part;
+	boost::property_tree::ptree prt;
+
+	try
+	{
+		boost::property_tree::json_parser::read_json( configFile, configurationTree_);
+
+		logToFile_ = configurationTree_.get_child( LOG_TO_FILE_PARAMETER_NAME).get_value<std::string>() != "0";
+		logToConsole_ = configurationTree_.get_child( LOG_TO_CONSOLE_PARAMETER_NAME).get_value<std::string>() != "0";
+		reconnectionInterval_ = configurationTree_.get_child( RECONNECT_INTERVAL_PARAMETER_NAME).get_value<uint16_t>();
+		configurationTree_.get_child( DIRECTIONS_PARAMETER_NAME);
+	}
+
+	catch( std::exception& e)
+	{
+		std::cout << e.what() << std::endl;
+		configurationTree_.clear();
+
+		configurationTree_.add_child( LOG_TO_FILE_PARAMETER_NAME, boost::property_tree::ptree( DEFAULT_LOGGING));
+		configurationTree_.add_child( LOG_TO_CONSOLE_PARAMETER_NAME, boost::property_tree::ptree( DEFAULT_LOGGING));
+		configurationTree_.add_child( RECONNECT_INTERVAL_PARAMETER_NAME, boost::property_tree::ptree( DEFAULT_INTERVAL));
+
+		array.clear();
+		part.clear();
+		prt.clear();
+		prt.add_child( PROTOCOL_PARAMETER_NAME, boost::property_tree::ptree( UDP_PARAMETER_NAME));
+		prt.add_child( IP_PARAMETER_NAME, boost::property_tree::ptree( DEFAULT_IP));
+		prt.add_child( PORT_PARAMETER_NAME, boost::property_tree::ptree( DEFAULT_PORT));
+		part.add_child( SRC_PARAMETER_NAME, prt);
+
+		arr.clear();
+		arr.push_back( std::make_pair("", prt));
+		part.add_child( DST_PARAMETER_NAME, arr);
+
+		array.push_back( std::make_pair("", part));
+
+		configurationTree_.add_child( DIRECTIONS_PARAMETER_NAME, array);
+
+		writeToFile( configurationTree_);
+	}
+
+	return configurationTree_;
+}
+
+void ConfigurationManager::saveConfiguration( const boost::property_tree::ptree& configurationTree)
+{
+	if( writeToFile( configurationTree))
+		configurationTree_ = configurationTree;
+}
+
+bool ConfigurationManager::writeToFile( const boost::property_tree::ptree& configurationTree)
+{
+	boost::lock_guard<boost::mutex> lock( mutex_);
+
+	try
+	{
+		std::ofstream configFile;
+		configFile.open( configPath_.c_str(), std::ofstream::trunc | std::ofstream::out);
+		boost::property_tree::json_parser::write_json( configFile, configurationTree);
+		configFile.close();
+	}
+	catch ( std::exception&)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+boost::property_tree::ptree& ConfigurationManager::getConfigurationTree()
+{
+	return configurationTree_;
+}
+
+bool ConfigurationManager::isLoggingToFile()
+{
+	return logToFile_;
+}
+
+bool ConfigurationManager::isLoggingToConsole()
+{
+	return logToConsole_;
 }
 
 void ConfigurationManager::saveLoggingToFileState( bool state)
 {
-	boost::property_tree::ptree& configurationTree( configurationKeeper_.getConfigurationTree());
-	configurationTree.get_child( configuration::ConfigurationKeeper::LOG_TO_FILE_PARAMETER_NAME).
+	configurationTree_.get_child( configuration::ConfigurationManager::LOG_TO_FILE_PARAMETER_NAME).
 					put_value<std::string>( boost::lexical_cast<std::string>( state));
 
-	configurationKeeper_.saveConfiguration( configurationTree);
-}
-
-bool ConfigurationManager::getLoggingToConsoleState()
-{
-	return configurationKeeper_.isLoggingToConsole();
+	writeToFile( configurationTree_);
 }
 
 void ConfigurationManager::saveLoggingToConsoleState( bool state)
 {
-	boost::property_tree::ptree& configurationTree( configurationKeeper_.getConfigurationTree());
-	configurationTree.get_child( configuration::ConfigurationKeeper::LOG_TO_CONSOLE_PARAMETER_NAME).
+	configurationTree_.get_child( configuration::ConfigurationManager::LOG_TO_CONSOLE_PARAMETER_NAME).
 					put_value<std::string>( boost::lexical_cast<std::string>( state));
 
-	configurationKeeper_.saveConfiguration( configurationTree);
+	writeToFile( configurationTree_);
 }
 
 uint16_t ConfigurationManager::getReconnectionInterval()
 {
-	return configurationKeeper_.getReconnectionInterval();
+	return reconnectionInterval_;
 }
 
 void ConfigurationManager::saveReconnectionInterval( uint16_t inerval)
 {
-	boost::property_tree::ptree& configurationTree( configurationKeeper_.getConfigurationTree());
-	configurationTree.get_child( configuration::ConfigurationKeeper::RECONNECT_INTERVAL_PARAMETER_NAME).
+	configurationTree_.get_child( configuration::ConfigurationManager::RECONNECT_INTERVAL_PARAMETER_NAME).
 					put_value<std::string>( boost::lexical_cast<std::string>( inerval));
 
-	configurationKeeper_.saveConfiguration( configurationTree);
+	writeToFile( configurationTree_);
+}
+
+void ConfigurationManager::addTrafficDirection( const TrafficDirection& trafficDirection)
+{
+
+}
+
+void ConfigurationManager::deleteTrafficDirection( const TrafficDirection& trafficDirection)
+{
+
+}
+
+TrafficDirectionVector& ConfigurationManager::getTrafficDirectionVector()
+{
+	return trafficDirectionVector_;
+}
+
+std::string ConfigurationManager::getConfigPath()
+{
+	std::string path( std::getenv( "HOME"));
+	path += CONFIG_PATH;
+	if( !boost::filesystem::exists( path))
+		boost::filesystem::create_directories( path);
+	return path + CONFIG_NAME;
 }
 
 } /* namespace configuration */

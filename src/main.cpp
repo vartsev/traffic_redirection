@@ -8,7 +8,7 @@ int main( int argc, char* argv[])
 	std::cout << "interval: " << configurationManager.getReconnectionInterval() << std::endl;
 	configurationManager.saveLoggingToFileState( true);
 	configurationManager.saveLoggingToConsoleState( true);
-	configurationManager.saveReconnectionInterval( 500);
+	configurationManager.saveReconnectionInterval( 400);
 
 //	network::NetworkManager networkManager;
 
