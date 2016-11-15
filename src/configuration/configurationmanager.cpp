@@ -164,12 +164,7 @@ void ConfigurationManager::saveReconnectionInterval( uint16_t inerval)
 	writeToFile( configurationTree_);
 }
 
-void ConfigurationManager::addTrafficDirection( const network::TrafficDirection& trafficDirection)
-{
-
-}
-
-void ConfigurationManager::deleteTrafficDirection( const network::TrafficDirection& trafficDirection)
+void ConfigurationManager::update( const network::TrafficDirectionList& trafficDirectionList)
 {
 
 }

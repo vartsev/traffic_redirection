@@ -26,6 +26,8 @@ private:
 	ConnectionDataList distinationList_;
 };
 
+typedef std::list<TrafficDirection> TrafficDirectionList;
+
 } /* namespace configuration */
 
 #endif /* TRAFFICDIRECTION_H_ */
