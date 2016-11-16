@@ -5,12 +5,14 @@ libtrafficredirector_la_SOURCES = 							\
 		network/networkmanager.cpp							\
 		network/tcpclient.h									\
 		network/tcpclient.cpp								\
+		network/tcpserver.h									\
+		network/tcpserver.cpp								\
 		network/udpclient.h									\
 		network/udpclient.cpp								\
 		network/trafficdirection.h							\
 		network/trafficdirection.cpp						\
-		network/connectiondata.h							\
-		network/connectiondata.cpp							\
+		network/connection.h							\
+		network/connection.cpp							\
 		\
 		configuration/configurationmanager.h				\
 		configuration/configurationmanager.cpp

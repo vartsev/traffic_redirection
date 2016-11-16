@@ -15,6 +15,7 @@ const std::string ConfigurationManager::LOG_TO_CONSOLE_PARAMETER_NAME = "Logging
 const std::string ConfigurationManager::RECONNECT_INTERVAL_PARAMETER_NAME = "ReconnectionInterval(millisecond)";
 
 const std::string ConfigurationManager::DIRECTIONS_PARAMETER_NAME = "Directions";
+const std::string ConfigurationManager::ID_PARAMETER_NAME = "Id";
 const std::string ConfigurationManager::SRC_PARAMETER_NAME = "Source";
 const std::string ConfigurationManager::DST_PARAMETER_NAME = "Destinations";
 
@@ -46,13 +47,11 @@ ConfigurationManager::~ConfigurationManager()
 
 const boost::property_tree::ptree& ConfigurationManager::readFromFile( const std::string& configPath)
 {
-	boost::lock_guard<boost::mutex> lock( mutex_);
-	std::ifstream configFile( configPath.c_str(), std::ifstream::in);
-
-	boost::property_tree::ptree array;
-	boost::property_tree::ptree arr;
-	boost::property_tree::ptree part;
-	boost::property_tree::ptree prt;
+	std::ifstream configFile;
+	{
+		boost::lock_guard<boost::mutex> lock( mutex_);
+		configFile.open( configPath.c_str(), std::ifstream::in);
+	}
 
 	try
 	{
@@ -73,21 +72,8 @@ const boost::property_tree::ptree& ConfigurationManager::readFromFile( const std
 		configurationTree_.add_child( LOG_TO_CONSOLE_PARAMETER_NAME, boost::property_tree::ptree( DEFAULT_LOGGING));
 		configurationTree_.add_child( RECONNECT_INTERVAL_PARAMETER_NAME, boost::property_tree::ptree( DEFAULT_INTERVAL));
 
-		array.clear();
-		part.clear();
-		prt.clear();
-		prt.add_child( PROTOCOL_PARAMETER_NAME, boost::property_tree::ptree( UDP_PARAMETER_NAME));
-		prt.add_child( IP_PARAMETER_NAME, boost::property_tree::ptree( DEFAULT_IP));
-		prt.add_child( PORT_PARAMETER_NAME, boost::property_tree::ptree( DEFAULT_PORT));
-		part.add_child( SRC_PARAMETER_NAME, prt);
-
-		arr.clear();
-		arr.push_back( std::make_pair("", prt));
-		part.add_child( DST_PARAMETER_NAME, arr);
-
-		array.push_back( std::make_pair("", part));
-
-		configurationTree_.add_child( DIRECTIONS_PARAMETER_NAME, array);
+		boost::property_tree::ptree part;
+		configurationTree_.add_child( DIRECTIONS_PARAMETER_NAME, part);
 
 		writeToFile( configurationTree_);
 	}
@@ -164,9 +150,48 @@ void ConfigurationManager::saveReconnectionInterval( uint16_t inerval)
 	writeToFile( configurationTree_);
 }
 
-void ConfigurationManager::update( const network::TrafficDirectionList& trafficDirectionList)
+void ConfigurationManager::updateTrafficDirection( const network::TrafficDirectionList& trafficDirectionList)
 {
+	boost::property_tree::ptree array;
+	boost::property_tree::ptree arr;
+	boost::property_tree::ptree part;
+	boost::property_tree::ptree prt;
 
+	for( network::TrafficDirectionList::const_iterator itTraffic = trafficDirectionList.begin();
+			itTraffic != trafficDirectionList.end(); ++itTraffic)
+	{
+		prt.clear();
+		prt.add_child( PROTOCOL_PARAMETER_NAME, boost::property_tree::ptree( itTraffic->getSource().getPtotocol()));
+		prt.add_child( IP_PARAMETER_NAME, boost::property_tree::ptree( itTraffic->getSource().getIp()));
+		prt.add_child( PORT_PARAMETER_NAME, boost::property_tree::ptree( boost::lexical_cast<std::string>( itTraffic->getSource().getPort())));
+
+		part.clear();
+		part.add_child( ID_PARAMETER_NAME, boost::property_tree::ptree( boost::lexical_cast<std::string>( itTraffic->getId())));
+		part.add_child( SRC_PARAMETER_NAME, prt);
+
+		arr.clear();
+		{
+			for( network::ConnectionList::const_iterator itDistination = itTraffic->getDistinationList().begin();
+					itDistination != itTraffic->getDistinationList().end(); ++itDistination)
+			{
+				prt.clear();
+
+				prt.add_child( PROTOCOL_PARAMETER_NAME, boost::property_tree::ptree( itDistination->getPtotocol()));
+				prt.add_child( IP_PARAMETER_NAME, boost::property_tree::ptree( itDistination->getIp()));
+				prt.add_child( PORT_PARAMETER_NAME, boost::property_tree::ptree( boost::lexical_cast<std::string>( itDistination->getPort())));
+
+				arr.push_back( std::make_pair( "", prt));
+			}
+		}
+
+		part.add_child( DST_PARAMETER_NAME, arr);
+
+		array.push_back( std::make_pair("", part));
+
+	}
+
+	configurationTree_.put_child( DIRECTIONS_PARAMETER_NAME, array);
+	writeToFile( configurationTree_);
 }
 
 std::string ConfigurationManager::getConfigPath()

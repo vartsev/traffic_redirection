@@ -12,102 +12,48 @@ namespace network
 
 NetworkManager::NetworkManager()
 {
+	init();
+}
+
+NetworkManager::~NetworkManager()
+{}
+
+bool NetworkManager::init()
+{
 	std::cout << "interval: " << configurationManager_.getReconnectionInterval() << std::endl;
 	configurationManager_.saveLoggingToFileState( true);
 	configurationManager_.saveLoggingToConsoleState( true);
 	configurationManager_.saveReconnectionInterval( 400);
 
-	init();
-}
+	Connection source( configuration::ConfigurationManager::UDP_PARAMETER_NAME, "127.0.0.1", 3000);
+	TrafficDirection direction( 1, source);
 
-NetworkManager::~NetworkManager()
-{
+	Connection dst( configuration::ConfigurationManager::UDP_PARAMETER_NAME, "127.0.0.1", 3010);
+	Connection dst1( configuration::ConfigurationManager::TCP_CLIENT_PARAMETER_NAME, "127.0.0.1", 3011);
+	Connection dst2( configuration::ConfigurationManager::TCP_SERVER_PARAMETER_NAME, "127.0.0.1", 3012);
+	direction.addDistination( dst);
+	direction.addDistination( dst1);
+	direction.addDistination( dst2);
 
-}
+	Connection source1( configuration::ConfigurationManager::UDP_PARAMETER_NAME, "127.0.0.1", 3001);
+	TrafficDirection direction1( 2, source1);
 
-bool NetworkManager::init()
-{
-//	udpClient_.setHandlerUdpPacket( boost::bind( &network::NetworkManager::receiveUdpPacket, this, _1));
+	Connection dst3( configuration::ConfigurationManager::TCP_CLIENT_PARAMETER_NAME, "127.0.0.1", 3020);
+	Connection dst4( configuration::ConfigurationManager::TCP_CLIENT_PARAMETER_NAME, "127.0.0.1", 3021);
+	Connection dst5( configuration::ConfigurationManager::UDP_PARAMETER_NAME, "127.0.0.1", 3022);
+	direction1.addDistination( dst3);
+	direction1.addDistination( dst4);
+	direction1.addDistination( dst5);
 
-	try
-	{
-//		boost::property_tree::ptree root = configuration::ConfigurationManager::getInstance().readFromFile();
+	configurationManager_.updateTrafficDirection( trafficDirectionList_);
 
-//		std::string ipAddress = root.get_child( configuration::ConfigurationManager::UDP_PARAMETER_NAME).
-//								get_child( configuration::ConfigurationManager::PARTNER_IP_PARAMETER_NAME).
-//								get_value<std::string>(configuration::ConfigurationManager::DEFAULT_PARTNER_IP);
-//
-//		uint16_t portForWrite = boost::lexical_cast<uint16_t>( root.get_child( configuration::ConfigurationManager::UDP_PARAMETER_NAME).
-//				get_child( configuration::ConfigurationManager::PORT_FOR_WRITE_PARAMETER_NAME).
-//				get_value<std::string>( configuration::ConfigurationManager::DEFAULT_PORT_FOR_WRITE));
-//
-//		uint16_t portForRead = boost::lexical_cast<uint16_t>( root.get_child( configuration::ConfigurationManager::UDP_PARAMETER_NAME).
-//				get_child( configuration::ConfigurationManager::PORT_FOR_READ_PARAMETER_NAME).
-//				get_value<std::string>( configuration::ConfigurationManager::DEFAULT_PORT_FOR_READ));
-//
-//		uint16_t time = boost::lexical_cast<uint32_t>( root.get_child( configuration::ConfigurationManager::RECONNECT_TIME_PARAMETER_NAME).get_value<std::string>( "500"));
-//
-//		udpClient_.init( ipAddress, portForWrite, portForRead, time);
-//
-//		std::cout << "UdpClient ip: " << ipAddress << "   portForWrite: " << portForWrite << "   portForRead: " << portForRead << std::endl;
-//
-//		BOOST_FOREACH( boost::property_tree::ptree::const_iterator::value_type item, root.get_child( configuration::ConfigurationManager::TCP_PARAMETER_NAME))
-//		{
-//			try
-//			{
-//				TcpClientPtr ptr( new network::TcpClient());
-//				ptr->setHandlerTcpPacket( boost::bind( &network::NetworkManager::receiveTcpPacket, this, _1));
-//				ipAddress = item.second.get_child( configuration::ConfigurationManager::PARTNER_IP_PARAMETER_NAME).get_value<std::string>();
-//				portForWrite = boost::lexical_cast<uint16_t>( item.second.get_child( "Port").get_value<std::string>());
-//				ptr->init( ipAddress, portForWrite, time);
-//				tcpClientVector_.push_back( ptr);
-//				std::cout << "TcpClient ip: " << ipAddress << "   port: " << portForWrite << std::endl;
-//			}
-//			catch( std::exception& e)
-//			{
-//				std::cout << "NetworkManager::init 2 error: " << e.what() << std::endl;
-//				return false;
-//			}
-//		}
-//
-//		std::cout << "ReconnectInterval: " << time << std::endl;
-	}
-	catch( std::exception& e)
-	{
-		std::cout << "NetworkManager::init 1 error: " << e.what() << std::endl;
-		return false;
-	}
+	trafficDirectionList_.remove( direction);
+	trafficDirectionList_.push_back( direction1);
+	trafficDirectionList_.push_back( direction);
+
+	configurationManager_.updateTrafficDirection( trafficDirectionList_);
 
 	return true;
-}
-
-bool NetworkManager::receiveUdpPacket( const std::string& packet)
-{
-	sendTcpPacket( packet);
-	return true;
-}
-
-bool NetworkManager::receiveTcpPacket( const std::string& packet)
-{
-	sendUdpPacket( packet);
-	return true;
-}
-
-void NetworkManager::sendUdpPacket( const std::string& packet)
-{
-//	if( !configuration::ConfigurationManager::getInstance().isTcpToUdp())
-//		return;
-
-	udpClient_.sendPacket( packet);
-}
-
-void NetworkManager::sendTcpPacket( const std::string& packet)
-{
-//	if( !configuration::ConfigurationManager::getInstance().isUdpToTcp())
-//		return;
-
-	for( TcpClientVector::iterator it = tcpClientVector_.begin(); it != tcpClientVector_.end(); ++it)
-		it->get()->sendPacket( packet);
 }
 
 } /* namespace network */

@@ -1,29 +1,34 @@
 #ifndef TRAFFICDIRECTION_H_
 #define TRAFFICDIRECTION_H_
 
-#include "connectiondata.h"
+#include "connection.h"
 #include <list>
 
 namespace network
 {
 
-typedef std::list< ConnectionData> ConnectionDataList;
+typedef std::list< Connection> ConnectionList;
 
 class TrafficDirection
 {
 public:
-	TrafficDirection( const ConnectionData& source);
+	TrafficDirection( uint16_t id, const Connection& source);
 	~TrafficDirection();
 
-	const ConnectionData& getSource() const;
-	const ConnectionDataList& getDistinationList() const;
+	uint16_t getId() const;
 
-	void addDistination( const ConnectionData& distination);
-	void deleteDistination( const ConnectionData& distination);
+	const Connection& getSource() const;
+	const ConnectionList& getDistinationList() const;
+
+	void addDistination( const Connection& distination);
+	void deleteDistination( const Connection& distination);
+
+	bool operator==( const TrafficDirection& right);
 
 private:
-	ConnectionData source_;
-	ConnectionDataList distinationList_;
+	uint16_t id_;
+	Connection source_;
+	ConnectionList distinationList_;
 };
 
 typedef std::list<TrafficDirection> TrafficDirectionList;

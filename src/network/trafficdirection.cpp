@@ -3,30 +3,40 @@
 namespace network
 {
 
-TrafficDirection::TrafficDirection( const ConnectionData& source) : source_( source)
+TrafficDirection::TrafficDirection( uint16_t id, const Connection& source) : id_( id), source_( source)
 {}
 
 TrafficDirection::~TrafficDirection()
 {}
 
-const ConnectionData& TrafficDirection::getSource() const
+uint16_t TrafficDirection::getId() const
+{
+	return id_;
+}
+
+const Connection& TrafficDirection::getSource() const
 {
 	return source_;
 }
 
-const ConnectionDataList& TrafficDirection::getDistinationList() const
+const ConnectionList& TrafficDirection::getDistinationList() const
 {
 	return distinationList_;
 }
 
-void TrafficDirection::addDistination( const ConnectionData& distination)
+void TrafficDirection::addDistination( const Connection& distination)
 {
 	distinationList_.push_back( distination);
 }
 
-void TrafficDirection::deleteDistination( const ConnectionData& distination)
+void TrafficDirection::deleteDistination( const Connection& distination)
 {
 	distinationList_.remove( distination);
+}
+
+bool TrafficDirection::operator==( const TrafficDirection& right)
+{
+	return (id_ == right.getId()) ? true : false;
 }
 
 } /* namespace network */

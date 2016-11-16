@@ -43,6 +43,8 @@ private:
 	boost::thread ioServiceThread_;
 };
 
+typedef boost::shared_ptr< network::UdpClient> UdpClientPtr;
+
 } /* namespace network */
 
 #endif /* UDPCLIENT_H_ */

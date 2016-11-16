@@ -15,7 +15,9 @@ UdpClient::UdpClient(): isInit_( false), ip_(""), portForWrite_( 44000), portFor
 
 UdpClient::~UdpClient()
 {
-    socketPtr_->close();
+	if ( socketPtr_.get())
+		socketPtr_->close();
+
 	service_.stop();
 	ioServiceThread_.interrupt();
 	ioServiceThread_.join();
