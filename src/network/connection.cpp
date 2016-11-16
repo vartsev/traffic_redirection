@@ -35,9 +35,22 @@ const uint16_t Connection::getPort() const
 	return port_;
 }
 
-bool Connection::operator==( const Connection& right)
+bool Connection::operator==( const Connection& right) const
 {
-	return (protocol_ == right.getPtotocol()) ? true : false;
+	if( protocol_ == right.getPtotocol() && ip_ == right.getIp() && port_== right.getPort())
+		return true;
+
+	return false;
+}
+
+bool Connection::operator<( const Connection& right) const
+{
+//	return port_ < right.getPort();
+
+	if( port_ <= right.getPort() && !(*this == right))
+		return true;
+
+	return false;
 }
 
 } /* namespace network */

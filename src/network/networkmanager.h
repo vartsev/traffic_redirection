@@ -22,7 +22,7 @@ public:
 private:
 	configuration::ConfigurationManager configurationManager_;
 
-	TrafficDirectionList trafficDirectionList_;
+	TrafficDirectionSet trafficDirectionSet_;
 };
 
 } /* namespace network */

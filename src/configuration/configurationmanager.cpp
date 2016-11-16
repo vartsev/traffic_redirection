@@ -15,7 +15,6 @@ const std::string ConfigurationManager::LOG_TO_CONSOLE_PARAMETER_NAME = "Logging
 const std::string ConfigurationManager::RECONNECT_INTERVAL_PARAMETER_NAME = "ReconnectionInterval(millisecond)";
 
 const std::string ConfigurationManager::DIRECTIONS_PARAMETER_NAME = "Directions";
-const std::string ConfigurationManager::ID_PARAMETER_NAME = "Id";
 const std::string ConfigurationManager::SRC_PARAMETER_NAME = "Source";
 const std::string ConfigurationManager::DST_PARAMETER_NAME = "Destinations";
 
@@ -150,14 +149,14 @@ void ConfigurationManager::saveReconnectionInterval( uint16_t inerval)
 	writeToFile( configurationTree_);
 }
 
-void ConfigurationManager::updateTrafficDirection( const network::TrafficDirectionList& trafficDirectionList)
+void ConfigurationManager::updateTrafficDirection( const network::TrafficDirectionSet& trafficDirectionList)
 {
 	boost::property_tree::ptree array;
 	boost::property_tree::ptree arr;
 	boost::property_tree::ptree part;
 	boost::property_tree::ptree prt;
 
-	for( network::TrafficDirectionList::const_iterator itTraffic = trafficDirectionList.begin();
+	for( network::TrafficDirectionSet::const_iterator itTraffic = trafficDirectionList.begin();
 			itTraffic != trafficDirectionList.end(); ++itTraffic)
 	{
 		prt.clear();
@@ -166,13 +165,12 @@ void ConfigurationManager::updateTrafficDirection( const network::TrafficDirecti
 		prt.add_child( PORT_PARAMETER_NAME, boost::property_tree::ptree( boost::lexical_cast<std::string>( itTraffic->getSource().getPort())));
 
 		part.clear();
-		part.add_child( ID_PARAMETER_NAME, boost::property_tree::ptree( boost::lexical_cast<std::string>( itTraffic->getId())));
 		part.add_child( SRC_PARAMETER_NAME, prt);
 
 		arr.clear();
 		{
-			for( network::ConnectionList::const_iterator itDistination = itTraffic->getDistinationList().begin();
-					itDistination != itTraffic->getDistinationList().end(); ++itDistination)
+			for( network::ConnectionSet::const_iterator itDistination = itTraffic->getDistinationSet().begin();
+					itDistination != itTraffic->getDistinationSet().end(); ++itDistination)
 			{
 				prt.clear();
 

@@ -21,7 +21,8 @@ public:
 	const std::string& getIp() const;
 	const uint16_t getPort() const;
 
-	bool operator==( const Connection& right);
+	bool operator==( const Connection& right) const;
+	bool operator<( const Connection& right) const;
 
 private:
 	std::string protocol_;

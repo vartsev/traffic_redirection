@@ -3,40 +3,70 @@
 namespace network
 {
 
-TrafficDirection::TrafficDirection( uint16_t id, const Connection& source) : id_( id), source_( source)
+TrafficDirection::TrafficDirection( const Connection& source) : source_( source)
 {}
 
 TrafficDirection::~TrafficDirection()
 {}
-
-uint16_t TrafficDirection::getId() const
-{
-	return id_;
-}
 
 const Connection& TrafficDirection::getSource() const
 {
 	return source_;
 }
 
-const ConnectionList& TrafficDirection::getDistinationList() const
+const ConnectionSet& TrafficDirection::getDistinationSet() const
 {
-	return distinationList_;
+	return distinationSet_;
 }
 
 void TrafficDirection::addDistination( const Connection& distination)
 {
-	distinationList_.push_back( distination);
+	distinationSet_.insert( distination);
 }
 
 void TrafficDirection::deleteDistination( const Connection& distination)
 {
-	distinationList_.remove( distination);
+	distinationSet_.erase( distination);
 }
 
-bool TrafficDirection::operator==( const TrafficDirection& right)
+bool TrafficDirection::operator==( const TrafficDirection& right) const
 {
-	return (id_ == right.getId()) ? true : false;
+	bool result = ( source_ == right.getSource());
+
+	if( !result)
+		return false;
+
+	for( ConnectionSet::const_iterator itTraffic = distinationSet_.begin()
+			; itTraffic != distinationSet_.end(); ++itTraffic)
+	{
+		bool isSame = false;
+		for( ConnectionSet::const_iterator it = right.getDistinationSet().begin();
+				it != right.getDistinationSet().end(); ++it)
+		{
+			if(	*itTraffic == *it)
+			{
+				isSame = true;
+				break;
+			}
+		}
+
+		result = result && isSame;
+
+		if( !result)
+			return false;
+	}
+
+	return result;
+}
+
+bool TrafficDirection::operator<( const TrafficDirection& right) const
+{
+	if( source_.getPort() <= right.getSource().getPort() && !(*this == right))
+		return true;
+
+	return false;
+
+//	return source_ < right.getSource();
 }
 
 } /* namespace network */

@@ -7,31 +7,29 @@
 namespace network
 {
 
-typedef std::list< Connection> ConnectionList;
+typedef std::set< Connection> ConnectionSet;
 
 class TrafficDirection
 {
 public:
-	TrafficDirection( uint16_t id, const Connection& source);
+	TrafficDirection( const Connection& source);
 	~TrafficDirection();
 
-	uint16_t getId() const;
-
 	const Connection& getSource() const;
-	const ConnectionList& getDistinationList() const;
+	const ConnectionSet& getDistinationSet() const;
 
 	void addDistination( const Connection& distination);
 	void deleteDistination( const Connection& distination);
 
-	bool operator==( const TrafficDirection& right);
+	bool operator==( const TrafficDirection& right) const;
+	bool operator<( const TrafficDirection& right) const;
 
 private:
-	uint16_t id_;
 	Connection source_;
-	ConnectionList distinationList_;
+	ConnectionSet distinationSet_;
 };
 
-typedef std::list<TrafficDirection> TrafficDirectionList;
+typedef std::set<TrafficDirection> TrafficDirectionSet;
 
 } /* namespace configuration */
 
