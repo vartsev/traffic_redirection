@@ -14,19 +14,28 @@ const Connection& TrafficDirection::getSource() const
 	return source_;
 }
 
-const ConnectionSet& TrafficDirection::getDistinationSet() const
+const ConnectionList& TrafficDirection::getDistinationSet() const
 {
-	return distinationSet_;
+	return distinationList_;
 }
 
 void TrafficDirection::addDistination( const Connection& distination)
 {
-	distinationSet_.insert( distination);
+	bool isSame = false;
+	for( ConnectionList::iterator it = distinationList_.begin();
+			it!= distinationList_.end(); ++it)
+	{
+		if( distination == *it)
+			isSame = true;
+	}
+
+	if( !isSame)
+		distinationList_.push_back( distination);
 }
 
 void TrafficDirection::deleteDistination( const Connection& distination)
 {
-	distinationSet_.erase( distination);
+	distinationList_.remove( distination);
 }
 
 bool TrafficDirection::operator==( const TrafficDirection& right) const
@@ -36,11 +45,11 @@ bool TrafficDirection::operator==( const TrafficDirection& right) const
 	if( !result)
 		return false;
 
-	for( ConnectionSet::const_iterator itTraffic = distinationSet_.begin()
-			; itTraffic != distinationSet_.end(); ++itTraffic)
+	for( ConnectionList::const_iterator itTraffic = distinationList_.begin()
+			; itTraffic != distinationList_.end(); ++itTraffic)
 	{
 		bool isSame = false;
-		for( ConnectionSet::const_iterator it = right.getDistinationSet().begin();
+		for( ConnectionList::const_iterator it = right.getDistinationSet().begin();
 				it != right.getDistinationSet().end(); ++it)
 		{
 			if(	*itTraffic == *it)
@@ -57,16 +66,6 @@ bool TrafficDirection::operator==( const TrafficDirection& right) const
 	}
 
 	return result;
-}
-
-bool TrafficDirection::operator<( const TrafficDirection& right) const
-{
-	if( source_.getPort() <= right.getSource().getPort() && !(*this == right))
-		return true;
-
-	return false;
-
-//	return source_ < right.getSource();
 }
 
 } /* namespace network */

@@ -3,6 +3,7 @@
 
 #include<string>
 #include<stdint.h>
+#include <list>
 
 #include "udpclient.h"
 #include "tcpclient.h"
@@ -33,6 +34,8 @@ private:
 	TcpClientPtr tcpClientPtr_;
 	TcpServerPtr tcpServerPtr_;
 };
+
+typedef std::list< Connection> ConnectionList;
 
 } /* namespace network */
 

@@ -19,10 +19,13 @@ public:
 
 	bool init();
 
+	bool addTrafficDirection( const TrafficDirection& trafficDirection);
+	bool deleteTrafficDirection( const TrafficDirection& trafficDirection);
+
 private:
 	configuration::ConfigurationManager configurationManager_;
 
-	TrafficDirectionSet trafficDirectionSet_;
+	TrafficDirectionList trafficDirectionList_;
 };
 
 } /* namespace network */

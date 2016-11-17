@@ -56,7 +56,7 @@ public:
 	uint16_t getReconnectionInterval();
 	void saveReconnectionInterval( uint16_t inerval);
 
-	void updateTrafficDirection( const network::TrafficDirectionSet& trafficDirectionList);
+	void updateTrafficDirection( const network::TrafficDirectionList& trafficDirectionList);
 
 private:
 	const boost::property_tree::ptree& readFromFile( const std::string& configPath);
