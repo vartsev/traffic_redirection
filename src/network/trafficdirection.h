@@ -21,6 +21,9 @@ public:
 	bool operator==( const TrafficDirection& right) const;
 
 private:
+	bool handlePacket( const std::string& packet);
+
+private:
 	Connection source_;
 	ConnectionList distinationList_;
 };

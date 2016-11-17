@@ -18,12 +18,14 @@ public:
 	Connection( const std::string& protocol, const std::string& ip, uint16_t port);
 	~Connection();
 
+	void sendPacket( const std::string& packet);
+	void setHandlerPacket( const CallBack& handlePacket);
+
 	const std::string& getPtotocol() const;
 	const std::string& getIp() const;
 	const uint16_t getPort() const;
 
 	bool operator==( const Connection& right) const;
-	bool operator<( const Connection& right) const;
 
 private:
 	std::string protocol_;
@@ -33,6 +35,8 @@ private:
 	UdpClientPtr udpClientPtr_;
 	TcpClientPtr tcpClientPtr_;
 	TcpServerPtr tcpServerPtr_;
+
+	CallBack handlePacket_;
 };
 
 typedef std::list< Connection> ConnectionList;

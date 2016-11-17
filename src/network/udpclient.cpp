@@ -111,7 +111,7 @@ void UdpClient::sendPacket( const std::string& packet)
 	socketPtr_->send_to( boost::asio::buffer( packet), partnerEndpoint_);
 }
 
-void UdpClient::setHandlerUdpPacket( CallBack handleUdpPacket)
+void UdpClient::setHandlerPacket( const CallBack& handleUdpPacket)
 {
 	handlePacket_ = handleUdpPacket;
 }

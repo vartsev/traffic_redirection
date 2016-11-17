@@ -23,7 +23,7 @@ public:
 
 	bool init( uint16_t port);
 	void sendPacket( const std::string& packet);
-	void setHandlerTcpPacket( HandlePacket handlePacket);
+	void setHandlerPacket( HandlePacket handlePacket);
 
 private:
 	void expectConnection();

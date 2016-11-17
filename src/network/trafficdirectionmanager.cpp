@@ -1,24 +1,23 @@
-#include "networkmanager.h"
+#include "trafficdirectionmanager.h"
 #include "configuration/configurationmanager.h"
 
 #include <iostream>
 #include <stdint.h>
-#include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
 namespace network
 {
 
-NetworkManager::NetworkManager()
+TrafficDirectionManager::TrafficDirectionManager()
 {
 	init();
 }
 
-NetworkManager::~NetworkManager()
+TrafficDirectionManager::~TrafficDirectionManager()
 {}
 
-bool NetworkManager::init()
+bool TrafficDirectionManager::init()
 {
 	configurationManager_.saveLoggingToFileState( true);
 	configurationManager_.saveLoggingToConsoleState( true);
@@ -70,7 +69,7 @@ bool NetworkManager::init()
 	return true;
 }
 
-bool NetworkManager::addTrafficDirection( const TrafficDirection& trafficDirection)
+bool TrafficDirectionManager::addTrafficDirection( const TrafficDirection& trafficDirection)
 {
 	bool isSame = false;
 	for( TrafficDirectionList::iterator it = trafficDirectionList_.begin();
@@ -88,7 +87,7 @@ bool NetworkManager::addTrafficDirection( const TrafficDirection& trafficDirecti
 	return true;
 }
 
-bool NetworkManager::deleteTrafficDirection( const TrafficDirection& trafficDirection)
+bool TrafficDirectionManager::deleteTrafficDirection( const TrafficDirection& trafficDirection)
 {
 	trafficDirectionList_.remove( trafficDirection);
 

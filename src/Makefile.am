@@ -1,8 +1,8 @@
 lib_LTLIBRARIES = libtrafficredirector.la
 libtrafficredirector_la_CPPFLAGS = -std=c++11 $(GLIBMM_CFLAGS) -I$(top_srcdir)/src
 libtrafficredirector_la_SOURCES = 							\
-		network/networkmanager.h							\
-		network/networkmanager.cpp							\
+		network/trafficdirectionmanager.h					\
+		network/trafficdirectionmanager.cpp					\
 		network/tcpclient.h									\
 		network/tcpclient.cpp								\
 		network/tcpserver.h									\
@@ -11,8 +11,8 @@ libtrafficredirector_la_SOURCES = 							\
 		network/udpclient.cpp								\
 		network/trafficdirection.h							\
 		network/trafficdirection.cpp						\
-		network/connection.h							\
-		network/connection.cpp							\
+		network/connection.h								\
+		network/connection.cpp								\
 		\
 		configuration/configurationmanager.h				\
 		configuration/configurationmanager.cpp

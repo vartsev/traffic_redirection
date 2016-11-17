@@ -1,10 +1,14 @@
 #include "trafficdirection.h"
 
+#include <boost/bind.hpp>
+
 namespace network
 {
 
 TrafficDirection::TrafficDirection( const Connection& source) : source_( source)
-{}
+{
+	source_.setHandlerPacket( boost::bind( &TrafficDirection::handlePacket, this, _1));
+}
 
 TrafficDirection::~TrafficDirection()
 {}
@@ -22,7 +26,7 @@ const ConnectionList& TrafficDirection::getDistinationSet() const
 void TrafficDirection::addDistination( const Connection& distination)
 {
 	bool isSame = false;
-	for( ConnectionList::iterator it = distinationList_.begin();
+	for( ConnectionList::const_iterator it = distinationList_.begin();
 			it!= distinationList_.end(); ++it)
 	{
 		if( distination == *it)
@@ -38,6 +42,17 @@ void TrafficDirection::deleteDistination( const Connection& distination)
 	distinationList_.remove( distination);
 }
 
+bool TrafficDirection::handlePacket( const std::string& packet)
+{
+	for( ConnectionList::iterator itDistination = distinationList_.begin()
+				; itDistination!= distinationList_.end(); ++itDistination)
+	{
+		itDistination->sendPacket( packet);
+	}
+
+	return true;
+}
+
 bool TrafficDirection::operator==( const TrafficDirection& right) const
 {
 	bool result = ( source_ == right.getSource());
@@ -45,14 +60,14 @@ bool TrafficDirection::operator==( const TrafficDirection& right) const
 	if( !result)
 		return false;
 
-	for( ConnectionList::const_iterator itTraffic = distinationList_.begin()
-			; itTraffic != distinationList_.end(); ++itTraffic)
+	for( ConnectionList::const_iterator itDistination = distinationList_.begin()
+			; itDistination != distinationList_.end(); ++itDistination)
 	{
 		bool isSame = false;
 		for( ConnectionList::const_iterator it = right.getDistinationSet().begin();
 				it != right.getDistinationSet().end(); ++it)
 		{
-			if(	*itTraffic == *it)
+			if(	*itDistination == *it)
 			{
 				isSame = true;
 				break;

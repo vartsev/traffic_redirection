@@ -1,5 +1,5 @@
-#ifndef NETWORKMANAGER_H_
-#define NETWORKMANAGER_H_
+#ifndef TRAFFICDIRECTIONMANAGER_H_
+#define TRAFFICDIRECTIONMANAGER_H_
 
 #include "configuration/configurationmanager.h"
 #include "trafficdirection.h"
@@ -11,11 +11,11 @@
 namespace network
 {
 
-class NetworkManager
+class TrafficDirectionManager
 {
 public:
-	NetworkManager();
-	~NetworkManager();
+	TrafficDirectionManager();
+	~TrafficDirectionManager();
 
 	bool init();
 
@@ -30,4 +30,4 @@ private:
 
 } /* namespace network */
 
-#endif /* NETWORKMANAGER_H_ */
+#endif /* TRAFFICDIRECTIONMANAGER_H_ */

@@ -11,7 +11,7 @@ namespace network
 
 class TcpClient
 {
-	typedef boost::function< void ( const std::string)> HandlePacket;
+	typedef boost::function< void ( const std::string)> CallBack;
 	typedef boost::array< char, 2048> BufferForRead;
 	typedef boost::shared_ptr< BufferForRead> BufferForReadPtr;
 	typedef boost::shared_ptr <boost::asio::ip::tcp::socket> SocketPtr;
@@ -20,9 +20,9 @@ public:
 	TcpClient();
 	~TcpClient();
 
-	bool init( const std::string& ipAddress, uint16_t port, uint16_t time);
+	bool init( const std::string& ipAddress, uint16_t port, uint16_t time = 500);
 	void sendPacket( const std::string& packet);
-	void setHandlerTcpPacket( HandlePacket handleTcpPacket);
+	void setHandlerPacket( const CallBack& handleTcpPacket);
 
 private:
 	void connect();
@@ -36,7 +36,7 @@ private:
 	std::string ip_;
 	uint16_t port_;
 	uint16_t time_;
-	HandlePacket handlePacket_;
+	CallBack handlePacket_;
 	BufferForReadPtr bufferForReadPtr_;
 
 	boost::asio::io_service service_;

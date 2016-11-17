@@ -24,7 +24,7 @@ TcpServer::~TcpServer()
 	ioServiceThread_.join();
 }
 
-void TcpServer::setHandlerTcpPacket( HandlePacket handlePacket)
+void TcpServer::setHandlerPacket( HandlePacket handlePacket)
 {
 	handlePacket_ = handlePacket;
 }

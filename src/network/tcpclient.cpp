@@ -131,7 +131,7 @@ void TcpClient::sendPacket( const std::string& packet)
 	}
 }
 
-void TcpClient::setHandlerTcpPacket( HandlePacket handleTcpPacket)
+void TcpClient::setHandlerPacket( const CallBack& handleTcpPacket)
 {
 	handlePacket_ = handleTcpPacket;
 }

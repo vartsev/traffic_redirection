@@ -8,12 +8,11 @@
 
 namespace network
 {
+	typedef boost::function< bool( const std::string&)> CallBack;
 
 class UdpClient
 {
 	typedef boost::shared_ptr <boost::asio::ip::udp::socket> SocketPtr;
-	typedef boost::function< bool( const std::string&)> CallBack;
-
 	typedef boost::array< char, 2048> BufferForRead;
 	typedef boost::shared_ptr< BufferForRead> BufferForReadPtr;
 
@@ -21,9 +20,9 @@ public:
 	UdpClient();
 	~UdpClient();
 
-	bool init( const std::string& ipAddress, uint16_t portForWrite, uint16_t portForRead, uint16_t time);
+	bool init( const std::string& ipAddress, uint16_t portForWrite, uint16_t portForRead, uint16_t time = 500);
 	void sendPacket( const std::string& packet);
-	void setHandlerUdpPacket( CallBack handleUdpPacket);
+	void setHandlerPacket( const CallBack& handleUdpPacket);
 
 private:
 	void connect();
