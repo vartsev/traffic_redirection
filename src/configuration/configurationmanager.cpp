@@ -31,10 +31,11 @@ const std::string ConfigurationManager::DEFAULT_PORT = "44000";
 const std::string ConfigurationManager::DEFAULT_INTERVAL = "100";
 const std::string ConfigurationManager::DEFAULT_LOGGING = "0";
 
+bool ConfigurationManager::logToFile_ = false;
+bool ConfigurationManager::logToConsole_ = false;
+uint16_t ConfigurationManager::reconnectionInterval_ = 100;
+
 ConfigurationManager::ConfigurationManager():
-		logToFile_( false),
-		logToConsole_( true),
-		reconnectionInterval_( 100),
 		configPath_( getConfigPath())
 {
 	readFromFile( configPath_);
@@ -125,7 +126,8 @@ void ConfigurationManager::saveLoggingToFileState( bool state)
 	configurationTree_.get_child( configuration::ConfigurationManager::LOG_TO_FILE_PARAMETER_NAME).
 					put_value<std::string>( boost::lexical_cast<std::string>( state));
 
-	writeToFile( configurationTree_);
+	if( writeToFile( configurationTree_))
+		logToFile_ = state;
 }
 
 void ConfigurationManager::saveLoggingToConsoleState( bool state)
@@ -133,7 +135,8 @@ void ConfigurationManager::saveLoggingToConsoleState( bool state)
 	configurationTree_.get_child( configuration::ConfigurationManager::LOG_TO_CONSOLE_PARAMETER_NAME).
 					put_value<std::string>( boost::lexical_cast<std::string>( state));
 
-	writeToFile( configurationTree_);
+	if( writeToFile( configurationTree_))
+		logToConsole_ = state;
 }
 
 uint16_t ConfigurationManager::getReconnectionInterval()
@@ -146,7 +149,8 @@ void ConfigurationManager::saveReconnectionInterval( uint16_t inerval)
 	configurationTree_.get_child( configuration::ConfigurationManager::RECONNECT_INTERVAL_PARAMETER_NAME).
 					put_value<std::string>( boost::lexical_cast<std::string>( inerval));
 
-	writeToFile( configurationTree_);
+	if( writeToFile( configurationTree_))
+		reconnectionInterval_ = inerval;
 }
 
 void ConfigurationManager::updateTrafficDirection( const network::TrafficDirectionList& trafficDirectionList)

@@ -47,13 +47,13 @@ public:
 	boost::property_tree::ptree& getConfigurationTree();
 	void saveConfiguration( const boost::property_tree::ptree& configurationTree);
 
-	bool isLoggingToFile();
+	static bool isLoggingToFile();
 	void saveLoggingToFileState( bool state);
 
-	bool isLoggingToConsole();
+	static bool isLoggingToConsole();
 	void saveLoggingToConsoleState( bool state);
 
-	uint16_t getReconnectionInterval();
+	static uint16_t getReconnectionInterval();
 	void saveReconnectionInterval( uint16_t inerval);
 
 	void updateTrafficDirection( const network::TrafficDirectionList& trafficDirectionList);
@@ -64,9 +64,9 @@ private:
 	std::string getConfigPath();
 
 private:
-	bool logToFile_;
-	bool logToConsole_;
-	uint16_t reconnectionInterval_;
+	static bool logToFile_;
+	static bool logToConsole_;
+	static uint16_t reconnectionInterval_;
 	std::string configPath_;
 
 	boost::property_tree::ptree configurationTree_;

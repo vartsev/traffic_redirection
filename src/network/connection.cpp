@@ -12,13 +12,13 @@ Connection::Connection( const std::string& protocol, const std::string& ip, uint
 	if( protocol == configuration::ConfigurationManager::UDP_PARAMETER_NAME)
 	{
 		udpClientPtr_ = UdpClientPtr( new UdpClient());
-		udpClientPtr_->init( ip, port, port);
+		udpClientPtr_->init( ip, port, port, configuration::ConfigurationManager::getReconnectionInterval());
 		udpClientPtr_->setHandlerPacket( handlePacket_);
 	}
 	else if( protocol == configuration::ConfigurationManager::TCP_CLIENT_PARAMETER_NAME)
 	{
 		tcpClientPtr_ = TcpClientPtr( new TcpClient());
-		tcpClientPtr_->init( ip, port);
+		tcpClientPtr_->init( ip, port, configuration::ConfigurationManager::getReconnectionInterval());
 		tcpClientPtr_->setHandlerPacket( handlePacket_);
 	}
 	else if( protocol == configuration::ConfigurationManager::TCP_SERVER_PARAMETER_NAME)

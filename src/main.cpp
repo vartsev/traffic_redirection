@@ -3,7 +3,7 @@
 
 int main( int argc, char* argv[])
 {
-	network::TrafficDirectionManager networkManager;
+	network::TrafficDirectionManager manager;
 
 	while(true)
 	{
