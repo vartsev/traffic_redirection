@@ -62,7 +62,7 @@ bool TrafficDirectionManager::init()
 	addTrafficDirection( direction3);
 	addTrafficDirection( direction1);
 
-	deleteTrafficDirection( direction3);
+//	deleteTrafficDirection( direction3);
 
 	configurationManager_.updateTrafficDirection( trafficDirectionList_);
 

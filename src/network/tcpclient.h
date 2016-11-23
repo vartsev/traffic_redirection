@@ -31,7 +31,6 @@ private:
 	void handleWriting( const boost::system::error_code& error);
 
 private:
-	bool isInit_;
 	bool isConnected_;
 	std::string ip_;
 	uint16_t port_;
@@ -43,6 +42,7 @@ private:
 	SocketPtr socketPtr_;
 	boost::asio::ip::tcp::endpoint partnerEndpoint_;
 	boost::thread ioServiceThread_;
+	boost::thread connectThread_;
 };
 
 typedef boost::shared_ptr< network::TcpClient> TcpClientPtr;

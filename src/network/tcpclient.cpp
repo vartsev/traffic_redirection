@@ -7,7 +7,7 @@
 namespace network
 {
 
-TcpClient::TcpClient() : isInit_( false), isConnected_( false), ip_(""), port_( 34000), time_( 500)
+TcpClient::TcpClient() : isConnected_( false), ip_(""), port_( 34000), time_( 500)
 {
 	bufferForReadPtr_ = BufferForReadPtr( new BufferForRead);
 }
@@ -20,9 +20,14 @@ TcpClient::~TcpClient()
 		socketPtr_->close();
 
 	service_.stop();
+
 	ioServiceThread_.detach();
 	ioServiceThread_.interrupt();
 	ioServiceThread_.join();
+
+	connectThread_.detach();
+	connectThread_.interrupt();
+	connectThread_.join();
 }
 
 bool TcpClient::init( const std::string& ipAddress, uint16_t port, uint16_t time)
@@ -31,9 +36,8 @@ bool TcpClient::init( const std::string& ipAddress, uint16_t port, uint16_t time
 		port_ = port;
 		time_ = time;
 
-		connect();
+		connectThread_ = boost::thread( boost::bind( &TcpClient::connect, this));
 
-		isInit_ = true;
 		return true;
 }
 
@@ -61,6 +65,7 @@ void TcpClient::connect()
 //			std::cout <<  boost::posix_time::microsec_clock::local_time() <<" no connection! error: " << error.value() << std::endl;
 		isConnected_ = false;
 		usleep( time_ * 1000);
+
 		connect();
 		return;
 	}
@@ -86,7 +91,7 @@ void TcpClient::handleReading( BufferForReadPtr bufferPtr, const boost::system::
 	if( error.value() != 0)
 	{
 		isConnected_ = false;
-		connect();
+//		connect();
 		return;
 	}
 
@@ -98,7 +103,7 @@ void TcpClient::handleReading( BufferForReadPtr bufferPtr, const boost::system::
 	if( !socketPtr_.get() || !socketPtr_->is_open())
 	{
 		isConnected_ = false;
-		connect();
+//		connect();
 		return;
 	}
 
@@ -108,9 +113,6 @@ void TcpClient::handleReading( BufferForReadPtr bufferPtr, const boost::system::
 
 void TcpClient::sendPacket( const std::string& packet)
 {
-	if( !isInit_)
-		return;
-
 	if( !isConnected_ || !socketPtr_.get() || !socketPtr_->is_open())
 	{
 		isConnected_ = false;
