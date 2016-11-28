@@ -1,6 +1,6 @@
 noinst_LTLIBRARIES = libtrafficredirectortest.la
 libtrafficredirectortest_la_CPPFLAGS = -std=c++11 $(GLIBMM_CFLAGS) -I$(top_srcdir)/src
-libtrafficredirectortest_la_SOURCES =  main.cpp
+libtrafficredirectortest_la_SOURCES =  trafficdirectionmanagertest.h
 
 noinst_PROGRAMS=trafficredirectortest
 
