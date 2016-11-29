@@ -7,7 +7,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/foreach.hpp>
 
-namespace network
+namespace model
 {
 
 TrafficDirectionManager::TrafficDirectionManager()
@@ -133,4 +133,4 @@ bool TrafficDirectionManager::deleteTrafficDirection( const TrafficDirection& tr
 	return true;
 }
 
-} /* namespace network */
+} /* namespace model */

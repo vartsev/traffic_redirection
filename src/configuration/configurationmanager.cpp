@@ -153,14 +153,14 @@ void ConfigurationManager::saveReconnectionInterval( uint16_t inerval)
 		reconnectionInterval_ = inerval;
 }
 
-void ConfigurationManager::updateTrafficDirection( const network::TrafficDirectionList& trafficDirectionList)
+void ConfigurationManager::updateTrafficDirection( const model::TrafficDirectionList& trafficDirectionList)
 {
 	boost::property_tree::ptree array;
 	boost::property_tree::ptree arr;
 	boost::property_tree::ptree part;
 	boost::property_tree::ptree prt;
 
-	for( network::TrafficDirectionList::const_iterator itTraffic = trafficDirectionList.begin();
+	for( model::TrafficDirectionList::const_iterator itTraffic = trafficDirectionList.begin();
 			itTraffic != trafficDirectionList.end(); ++itTraffic)
 	{
 		prt.clear();
@@ -173,7 +173,7 @@ void ConfigurationManager::updateTrafficDirection( const network::TrafficDirecti
 
 		arr.clear();
 		{
-			for( network::ConnectionList::const_iterator itDistination = itTraffic->getDistinationSet().begin();
+			for( model::ConnectionList::const_iterator itDistination = itTraffic->getDistinationSet().begin();
 					itDistination != itTraffic->getDistinationSet().end(); ++itDistination)
 			{
 				prt.clear();

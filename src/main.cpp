@@ -1,9 +1,9 @@
-#include "network/trafficdirectionmanager.h"
+#include "model/trafficdirectionmanager.h"
 #include "configuration/configurationmanager.h"
 
 int main( int argc, char* argv[])
 {
-	network::TrafficDirectionManager manager;
+	model::TrafficDirectionManager manager;
 
 	while(true)
 	{

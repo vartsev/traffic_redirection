@@ -5,11 +5,11 @@
 #include<stdint.h>
 #include <list>
 
-#include "udpclient.h"
-#include "tcpclient.h"
-#include "tcpserver.h"
+#include "network/udpclient.h"
+#include "network/tcpclient.h"
+#include "network/tcpserver.h"
 
-namespace network
+namespace model
 {
 
 class Connection
@@ -19,7 +19,7 @@ public:
 	~Connection();
 
 	void sendPacket( const std::string& packet);
-	void setHandlerPacket( const CallBack& handlePacket);
+	void setHandlerPacket( const network::CallBack& handlePacket);
 
 	const std::string& getPtotocol() const;
 	const std::string& getIp() const;
@@ -32,15 +32,15 @@ private:
 	std::string ip_;
 	uint16_t port_;
 
-	UdpClientPtr udpClientPtr_;
-	TcpClientPtr tcpClientPtr_;
-	TcpServerPtr tcpServerPtr_;
+	network::UdpClientPtr udpClientPtr_;
+	network::TcpClientPtr tcpClientPtr_;
+	network::TcpServerPtr tcpServerPtr_;
 
-	CallBack handlePacket_;
+	network::CallBack handlePacket_;
 };
 
 typedef std::list< Connection> ConnectionList;
 
-} /* namespace network */
+} /* namespace model */
 
 #endif /* CONNECTION_H_ */

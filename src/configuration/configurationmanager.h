@@ -1,7 +1,7 @@
 #ifndef CONFIGURATIONKEEPER_H_
 #define CONFIGURATIONKEEPER_H_
 
-#include "network/trafficdirection.h"
+#include "model/trafficdirection.h"
 
 #include <boost/thread.hpp>
 #include <boost/property_tree/ptree_fwd.hpp>
@@ -56,7 +56,7 @@ public:
 	static uint16_t getReconnectionInterval();
 	void saveReconnectionInterval( uint16_t inerval);
 
-	void updateTrafficDirection( const network::TrafficDirectionList& trafficDirectionList);
+	void updateTrafficDirection( const model::TrafficDirectionList& trafficDirectionList);
 
 private:
 	const boost::property_tree::ptree& readFromFile( const std::string& configPath);

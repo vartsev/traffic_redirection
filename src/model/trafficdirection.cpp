@@ -2,7 +2,7 @@
 
 #include <boost/bind.hpp>
 
-namespace network
+namespace model
 {
 
 TrafficDirection::TrafficDirection( const Connection& source) : source_( source)
@@ -83,4 +83,4 @@ bool TrafficDirection::operator==( const TrafficDirection& right) const
 	return result;
 }
 
-} /* namespace network */
+} /* namespace model */

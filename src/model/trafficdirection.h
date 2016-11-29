@@ -3,7 +3,7 @@
 
 #include "connection.h"
 
-namespace network
+namespace model
 {
 
 class TrafficDirection
@@ -30,6 +30,6 @@ private:
 
 typedef std::list<TrafficDirection> TrafficDirectionList;
 
-} /* namespace configuration */
+} /* namespace model */
 
 #endif /* TRAFFICDIRECTION_H_ */

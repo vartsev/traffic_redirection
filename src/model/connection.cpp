@@ -1,7 +1,7 @@
 #include "connection.h"
 #include "configuration/configurationmanager.h"
 
-namespace network
+namespace model
 {
 
 Connection::Connection( const std::string& protocol, const std::string& ip, uint16_t port):
@@ -11,19 +11,19 @@ Connection::Connection( const std::string& protocol, const std::string& ip, uint
 {
 	if( protocol == configuration::ConfigurationManager::UDP_PARAMETER_NAME)
 	{
-		udpClientPtr_ = UdpClientPtr( new UdpClient());
+		udpClientPtr_ = network::UdpClientPtr( new network::UdpClient());
 		udpClientPtr_->init( ip, port, port, configuration::ConfigurationManager::getReconnectionInterval());
 		udpClientPtr_->setHandlerPacket( handlePacket_);
 	}
 	else if( protocol == configuration::ConfigurationManager::TCP_CLIENT_PARAMETER_NAME)
 	{
-		tcpClientPtr_ = TcpClientPtr( new TcpClient());
+		tcpClientPtr_ = network::TcpClientPtr( new network::TcpClient());
 		tcpClientPtr_->init( ip, port, configuration::ConfigurationManager::getReconnectionInterval());
 		tcpClientPtr_->setHandlerPacket( handlePacket_);
 	}
 	else if( protocol == configuration::ConfigurationManager::TCP_SERVER_PARAMETER_NAME)
 	{
-		tcpServerPtr_ = TcpServerPtr( new TcpServer());
+		tcpServerPtr_ = network::TcpServerPtr( new network::TcpServer());
 		tcpServerPtr_->init( port);
 		tcpServerPtr_->setHandlerPacket( handlePacket_);
 	}
@@ -44,7 +44,7 @@ void Connection::sendPacket( const std::string& packet)
 		tcpServerPtr_->sendPacket( packet);
 }
 
-void Connection::setHandlerPacket( const CallBack& handlePacket)
+void Connection::setHandlerPacket( const network::CallBack& handlePacket)
 {
 	handlePacket_ = handlePacket;
 }
@@ -72,4 +72,4 @@ bool Connection::operator==( const Connection& right) const
 	return false;
 }
 
-} /* namespace network */
+} /* namespace model */

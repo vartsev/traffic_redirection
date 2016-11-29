@@ -7,7 +7,7 @@
 #include <boost/shared_ptr.hpp>
 #include <vector>
 
-namespace network
+namespace model
 {
 
 class TrafficDirectionManager
@@ -27,6 +27,6 @@ private:
 	TrafficDirectionList trafficDirectionList_;
 };
 
-} /* namespace network */
+} /* namespace model */
 
 #endif /* TRAFFICDIRECTIONMANAGER_H_ */
