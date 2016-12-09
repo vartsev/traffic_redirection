@@ -98,7 +98,8 @@ void TcpClient::handleReading( BufferForReadPtr bufferPtr, const boost::system::
 	std::string packet;
 	std::copy( bufferPtr->begin(), bufferPtr->begin()+bytes_transferred, std::back_inserter( packet));
 
-	handlePacket_( packet);
+	if( !handlePacket_.empty())
+		handlePacket_( packet);
 
 	if( !socketPtr_.get() || !socketPtr_->is_open())
 	{
