@@ -39,9 +39,8 @@ bool TrafficDirectionManager::init()
 		port = boost::lexical_cast<uint16_t>( item.second.get_child( configuration::ConfigurationManager::SRC_PARAMETER_NAME).
 				get_child( configuration::ConfigurationManager::PORT_PARAMETER_NAME).get_value<std::string>( ""));
 
-//		std::cout << "src: " << protocol << " " << ip << " " << port << std::endl;
-		Connection source( protocol, ip, port);
-		TrafficDirection direction( source);
+		ConnectionPtr sourcePtr = ConnectionPtr( new Connection ( protocol, ip, port, true));
+		TrafficDirectionPtr direction = TrafficDirectionPtr( new TrafficDirection( sourcePtr));
 
 		boost::property_tree::ptree& destinationTree = item.
 				second.get_child( configuration::ConfigurationManager::DST_PARAMETER_NAME);
@@ -52,9 +51,8 @@ bool TrafficDirectionManager::init()
 			ip = subItem.second.get_child( configuration::ConfigurationManager::IP_PARAMETER_NAME).get_value<std::string>( "");
 			port = boost::lexical_cast<uint16_t>( subItem.second.get_child( configuration::ConfigurationManager::PORT_PARAMETER_NAME).get_value<std::string>( ""));
 
-			Connection dst( protocol, ip, port);
-			direction.addDistination( dst);
-//			std::cout << protocol << " " << ip << " " << port << std::endl;
+			ConnectionPtr dstPtr = ConnectionPtr( new Connection ( protocol, ip, port));
+			direction->addDistination( dstPtr);
 		}
 		addTrafficDirection( direction);
 	}
@@ -108,7 +106,7 @@ bool TrafficDirectionManager::init()
 	return true;
 }
 
-bool TrafficDirectionManager::addTrafficDirection( const TrafficDirection& trafficDirection)
+bool TrafficDirectionManager::addTrafficDirection( const TrafficDirectionPtr trafficDirection)
 {
 	bool isSame = false;
 	for( TrafficDirectionList::iterator it = trafficDirectionList_.begin();
@@ -126,7 +124,7 @@ bool TrafficDirectionManager::addTrafficDirection( const TrafficDirection& traff
 	return true;
 }
 
-bool TrafficDirectionManager::deleteTrafficDirection( const TrafficDirection& trafficDirection)
+bool TrafficDirectionManager::deleteTrafficDirection( const TrafficDirectionPtr trafficDirection)
 {
 	trafficDirectionList_.remove( trafficDirection);
 

@@ -15,7 +15,7 @@ namespace model
 class Connection
 {
 public:
-	Connection( const std::string& protocol, const std::string& ip, uint16_t port);
+	Connection( const std::string& protocol, const std::string& ip, uint16_t port, bool isSource = false);
 	~Connection();
 
 	void sendPacket( const std::string& packet);
@@ -35,12 +35,10 @@ private:
 	network::UdpClientPtr udpClientPtr_;
 	network::TcpClientPtr tcpClientPtr_;
 	network::TcpServerPtr tcpServerPtr_;
-
-	network::CallBack handlePacket_;
 };
 
-typedef std::list< Connection> ConnectionList;
-
+typedef std::shared_ptr<Connection> ConnectionPtr;
+typedef std::list< ConnectionPtr> ConnectionList;
 } /* namespace model */
 
 #endif /* CONNECTION_H_ */

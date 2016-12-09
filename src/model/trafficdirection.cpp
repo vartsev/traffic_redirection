@@ -5,15 +5,15 @@
 namespace model
 {
 
-TrafficDirection::TrafficDirection( const Connection& source) : source_( source)
+TrafficDirection::TrafficDirection( const ConnectionPtr source) : source_( source)
 {
-	source_.setHandlerPacket( boost::bind( &TrafficDirection::handlePacket, this, _1));
+	source_->setHandlerPacket( boost::bind( &TrafficDirection::handlePacket, this, _1));
 }
 
 TrafficDirection::~TrafficDirection()
 {}
 
-const Connection& TrafficDirection::getSource() const
+const ConnectionPtr TrafficDirection::getSource() const
 {
 	return source_;
 }
@@ -23,7 +23,7 @@ const ConnectionList& TrafficDirection::getDistinationSet() const
 	return distinationList_;
 }
 
-void TrafficDirection::addDistination( const Connection& distination)
+void TrafficDirection::addDistination( const ConnectionPtr distination)
 {
 	bool isSame = false;
 	for( ConnectionList::const_iterator it = distinationList_.begin();
@@ -37,17 +37,18 @@ void TrafficDirection::addDistination( const Connection& distination)
 		distinationList_.push_back( distination);
 }
 
-void TrafficDirection::deleteDistination( const Connection& distination)
+void TrafficDirection::deleteDistination( const ConnectionPtr distination)
 {
 	distinationList_.remove( distination);
 }
 
 bool TrafficDirection::handlePacket( const std::string& packet)
 {
-	for( ConnectionList::iterator itDistination = distinationList_.begin()
-				; itDistination!= distinationList_.end(); ++itDistination)
+	for( ConnectionList::iterator itDistination = distinationList_.begin();
+			!(itDistination == distinationList_.end());
+				++itDistination)
 	{
-		itDistination->sendPacket( packet);
+		itDistination->get()->sendPacket( packet);
 	}
 
 	return true;

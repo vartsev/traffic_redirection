@@ -18,8 +18,8 @@ public:
 
 	bool init();
 
-	bool addTrafficDirection( const TrafficDirection& trafficDirection);
-	bool deleteTrafficDirection( const TrafficDirection& trafficDirection);
+	bool addTrafficDirection( const TrafficDirectionPtr trafficDirection);
+	bool deleteTrafficDirection( const TrafficDirectionPtr trafficDirection);
 
 private:
 	configuration::ConfigurationManager configurationManager_;

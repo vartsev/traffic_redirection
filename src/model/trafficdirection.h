@@ -9,14 +9,14 @@ namespace model
 class TrafficDirection
 {
 public:
-	TrafficDirection( const Connection& source);
+	TrafficDirection( const ConnectionPtr source);
 	~TrafficDirection();
 
-	const Connection& getSource() const;
+	const ConnectionPtr getSource() const;
 	const ConnectionList& getDistinationSet() const;
 
-	void addDistination( const Connection& distination);
-	void deleteDistination( const Connection& distination);
+	void addDistination( const ConnectionPtr distination);
+	void deleteDistination( const ConnectionPtr distination);
 
 	bool operator==( const TrafficDirection& right) const;
 
@@ -24,11 +24,13 @@ private:
 	bool handlePacket( const std::string& packet);
 
 private:
-	Connection source_;
+	ConnectionPtr source_;
 	ConnectionList distinationList_;
+	std::list< int> testList_;
 };
-
-typedef std::list<TrafficDirection> TrafficDirectionList;
+//typedef std::unique_ptr<TrafficDirection>
+typedef std::shared_ptr<TrafficDirection> TrafficDirectionPtr;
+typedef std::list<TrafficDirectionPtr> TrafficDirectionList;
 
 } /* namespace model */
 

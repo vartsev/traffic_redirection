@@ -164,23 +164,23 @@ void ConfigurationManager::updateTrafficDirection( const model::TrafficDirection
 			itTraffic != trafficDirectionList.end(); ++itTraffic)
 	{
 		prt.clear();
-		prt.add_child( PROTOCOL_PARAMETER_NAME, boost::property_tree::ptree( itTraffic->getSource().getPtotocol()));
-		prt.add_child( IP_PARAMETER_NAME, boost::property_tree::ptree( itTraffic->getSource().getIp()));
-		prt.add_child( PORT_PARAMETER_NAME, boost::property_tree::ptree( boost::lexical_cast<std::string>( itTraffic->getSource().getPort())));
+		prt.add_child( PROTOCOL_PARAMETER_NAME, boost::property_tree::ptree( itTraffic->get()->getSource()->getPtotocol()));
+		prt.add_child( IP_PARAMETER_NAME, boost::property_tree::ptree( itTraffic->get()->getSource()->getIp()));
+		prt.add_child( PORT_PARAMETER_NAME, boost::property_tree::ptree( boost::lexical_cast<std::string>( itTraffic->get()->getSource()->getPort())));
 
 		part.clear();
 		part.add_child( SRC_PARAMETER_NAME, prt);
 
 		arr.clear();
 		{
-			for( model::ConnectionList::const_iterator itDistination = itTraffic->getDistinationSet().begin();
-					itDistination != itTraffic->getDistinationSet().end(); ++itDistination)
+			for( model::ConnectionList::const_iterator itDistination = itTraffic->get()->getDistinationSet().begin();
+					itDistination != itTraffic->get()->getDistinationSet().end(); ++itDistination)
 			{
 				prt.clear();
 
-				prt.add_child( PROTOCOL_PARAMETER_NAME, boost::property_tree::ptree( itDistination->getPtotocol()));
-				prt.add_child( IP_PARAMETER_NAME, boost::property_tree::ptree( itDistination->getIp()));
-				prt.add_child( PORT_PARAMETER_NAME, boost::property_tree::ptree( boost::lexical_cast<std::string>( itDistination->getPort())));
+				prt.add_child( PROTOCOL_PARAMETER_NAME, boost::property_tree::ptree( itDistination->get()->getPtotocol()));
+				prt.add_child( IP_PARAMETER_NAME, boost::property_tree::ptree( itDistination->get()->getIp()));
+				prt.add_child( PORT_PARAMETER_NAME, boost::property_tree::ptree( boost::lexical_cast<std::string>( itDistination->get()->getPort())));
 
 				arr.push_back( std::make_pair( "", prt));
 			}
