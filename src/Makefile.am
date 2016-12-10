@@ -8,6 +8,7 @@ libtrafficredirector_la_SOURCES = 							\
 		model/connection.h									\
 		model/connection.cpp								\
 		\
+		network/networkprovider.h							\
 		network/tcpclient.h									\
 		network/tcpclient.cpp								\
 		network/tcpserver.h									\

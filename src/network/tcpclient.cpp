@@ -7,7 +7,11 @@
 namespace network
 {
 
-TcpClient::TcpClient() : ip_(""), port_( 34000), time_( 500)
+TcpClient::TcpClient():
+		service_( SERVICE),
+		ip_(""),
+		port_( 34000),
+		time_( 500)
 {
 	bufferForReadPtr_ = BufferForReadPtr( new BufferForRead);
 }
@@ -121,7 +125,7 @@ void TcpClient::sendPacket( const std::string& packet)
 	}
 }
 
-void TcpClient::setHandlerPacket( const CallBack& handleTcpPacket)
+void TcpClient::setHandlerPacket( const HandlePacketCallBack& handleTcpPacket)
 {
 	handlePacket_ = handleTcpPacket;
 }

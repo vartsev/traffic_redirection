@@ -8,7 +8,13 @@
 namespace network
 {
 
-UdpClient::UdpClient(): isInit_( false), ip_(""), portForWrite_( 44000), portForRead_( 44000), time_( 500)
+UdpClient::UdpClient():
+		service_( SERVICE),
+		isInit_( false),
+		ip_(""),
+		portForWrite_( 44000),
+		portForRead_( 44000),
+		time_( 500)
 {
 	bufferForReadPtr_ = BufferForReadPtr( new BufferForRead);
 }
@@ -31,8 +37,6 @@ bool UdpClient::init( const std::string& ipAddress, uint16_t portForWrite, uint1
 
 	try
 	{
-//		boost::property_tree::ptree root = configuration::ConfigurationManager::getInstance().readFromFile();
-
 		ip_ = ipAddress;
 		portForWrite_ = portForWrite;
 		portForRead_ = portForRead;
@@ -109,7 +113,7 @@ void UdpClient::sendPacket( const std::string& packet)
 	socketPtr_->send_to( boost::asio::buffer( packet), partnerEndpoint_);
 }
 
-void UdpClient::setHandlerPacket( const CallBack& handleUdpPacket)
+void UdpClient::setHandlerPacket( const HandlePacketCallBack& handleUdpPacket)
 {
 	handlePacket_ = handleUdpPacket;
 }

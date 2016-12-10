@@ -25,13 +25,7 @@ public:
 	bool handleTcpServerPacket( const std::string& packet);
 
 	~TrafficDirectionManagerTest()
-	{
-		testThread_.detach();
-		testThread_.interrupt();
-		testThread_.join();
-	}
-
-	boost::thread testThread_;
+	{}
 };
 
 bool TrafficDirectionManagerTest::handleUdpClientPacket( const std::string& packet)
@@ -64,7 +58,6 @@ void TrafficDirectionManagerTest::startTest()
 	network::TcpServer tcpServer;
 	tcpServer.init( 5050);
 	tcpServer.setHandlerPacket( boost::bind( &TrafficDirectionManagerTest::handleTcpServerPacket, this, _1));
-//	testThread_ = boost::thread( boost::bind( &TrafficDirectionManagerTest::testList, this));
 	int n = 0;
 	while(true)
 	{

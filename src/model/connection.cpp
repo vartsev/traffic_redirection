@@ -44,7 +44,7 @@ void Connection::sendPacket( const std::string& packet)
 		tcpServerPtr_->sendPacket( packet);
 }
 
-void Connection::setHandlerPacket( const network::CallBack& handlePacket)
+void Connection::setHandlerPacket( const network::HandlePacketCallBack& handlePacket)
 {
 	if( udpClientPtr_.get() && protocol_ == configuration::ConfigurationManager::UDP_PARAMETER_NAME)
 		udpClientPtr_->setHandlerPacket( handlePacket);

@@ -1,19 +1,13 @@
 #ifndef TCPSERVER_H_
 #define TCPSERVER_H_
 
-#include <boost/asio.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/thread.hpp>
+#include "networkprovider.h"
 
 namespace network
 {
 
-
 class TcpServer
 {
-	typedef boost::function< void ( const std::string)> HandlePacket;
-	typedef boost::array< char, 2048> BufferForRead;
-	typedef boost::shared_ptr< BufferForRead> BufferForReadPtr;
 	typedef boost::shared_ptr <boost::asio::ip::tcp::acceptor> AcceptorPtr;
 	typedef boost::shared_ptr <boost::asio::ip::tcp::socket> SocketPtr;
 
@@ -23,7 +17,7 @@ public:
 
 	bool init( uint16_t port);
 	void sendPacket( const std::string& packet);
-	void setHandlerPacket( HandlePacket handlePacket);
+	void setHandlerPacket( const HandlePacketCallBack& handlePacket);
 
 private:
 	void expectConnection();
@@ -33,11 +27,11 @@ private:
 	void handleWriting( const boost::system::error_code& error);
 
 private:
+	boost::asio::io_service& service_;
 	bool isInit_;
-	HandlePacket handlePacket_;
+	HandlePacketCallBack handlePacket_;
 
 	BufferForReadPtr bufferForReadPtr_;
-	boost::asio::io_service service_;
 	SocketPtr socketPtr_;
 	boost::asio::ip::tcp::endpoint endpoint_;
 	AcceptorPtr acceptorPtr_;

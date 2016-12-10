@@ -19,7 +19,7 @@ public:
 	~Connection();
 
 	void sendPacket( const std::string& packet);
-	void setHandlerPacket( const network::CallBack& handlePacket);
+	void setHandlerPacket( const network::HandlePacketCallBack& handlePacket);
 
 	const std::string& getPtotocol() const;
 	const std::string& getIp() const;

@@ -1,20 +1,14 @@
 #ifndef UDPCLIENT_H_
 #define UDPCLIENT_H_
 
-#include <boost/asio.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/thread.hpp>
-#include <boost/function.hpp>
+#include "networkprovider.h"
 
 namespace network
 {
-	typedef boost::function< bool( const std::string&)> CallBack;
 
 class UdpClient
 {
 	typedef boost::shared_ptr <boost::asio::ip::udp::socket> SocketPtr;
-	typedef boost::array< char, 2048> BufferForRead;
-	typedef boost::shared_ptr< BufferForRead> BufferForReadPtr;
 
 public:
 	UdpClient();
@@ -22,21 +16,21 @@ public:
 
 	bool init( const std::string& ipAddress, uint16_t portForWrite, uint16_t portForRead, uint16_t time = 500);
 	void sendPacket( const std::string& packet);
-	void setHandlerPacket( const CallBack& handleUdpPacket);
+	void setHandlerPacket( const HandlePacketCallBack& handleUdpPacket);
 
 private:
 	void connect();
 	void handleReceive( BufferForReadPtr bufferPtr, const boost::system::error_code& error, size_t bytes_transferred);
 
 private:
+	boost::asio::io_service& service_;
 	bool isInit_;
 	std::string ip_;
 	uint16_t portForWrite_;
 	uint16_t portForRead_;
 	uint16_t time_;
-	boost::asio::io_service service_;
 	SocketPtr socketPtr_;
-	CallBack handlePacket_;
+	HandlePacketCallBack handlePacket_;
 	BufferForReadPtr bufferForReadPtr_;
 	boost::asio::ip::udp::endpoint partnerEndpoint_;
 	boost::thread ioServiceThread_;

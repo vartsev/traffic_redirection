@@ -1,12 +1,13 @@
 #include "tcpserver.h"
-//#include "debug/datalog.h"
 
 #include <boost/lexical_cast.hpp>
 
 namespace network
 {
 
-TcpServer::TcpServer() : isInit_(false)
+TcpServer::TcpServer():
+		service_( SERVICE),
+		isInit_(false)
 {
 	bufferForReadPtr_ = BufferForReadPtr( new BufferForRead);
 }
@@ -24,7 +25,7 @@ TcpServer::~TcpServer()
 	ioServiceThread_.join();
 }
 
-void TcpServer::setHandlerPacket( HandlePacket handlePacket)
+void TcpServer::setHandlerPacket( const HandlePacketCallBack& handlePacket)
 {
 	handlePacket_ = handlePacket;
 }
