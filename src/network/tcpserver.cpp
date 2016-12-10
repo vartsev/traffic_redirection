@@ -91,7 +91,7 @@ void TcpServer::handleReading( BufferForReadPtr bufferPtr, const boost::system::
 	std::string packet;
 	std::copy( bufferPtr->begin(), bufferPtr->begin()+bytes_transferred, std::back_inserter( packet));
 
-	if( !handlePacket_.empty())
+	if( handlePacket_)
 		handlePacket_( packet);
 
 	socketPtr_->async_read_some( boost::asio::buffer( *bufferForReadPtr_),
