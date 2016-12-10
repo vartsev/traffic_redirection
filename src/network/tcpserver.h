@@ -30,11 +30,10 @@ private:
 
 	void startReading();
 	void handleReading( BufferForReadPtr bufferPtr, const boost::system::error_code& error, size_t bytes_transferred);
-	void handleWriting();
+	void handleWriting( const boost::system::error_code& error);
 
 private:
 	bool isInit_;
-	std::string lastPacketForSending_;
 	HandlePacket handlePacket_;
 
 	BufferForReadPtr bufferForReadPtr_;

@@ -6,7 +6,7 @@
 namespace network
 {
 
-TcpServer::TcpServer() : isInit_(false), lastPacketForSending_( "")
+TcpServer::TcpServer() : isInit_(false)
 {
 	bufferForReadPtr_ = BufferForReadPtr( new BufferForRead);
 }
@@ -75,11 +75,6 @@ void TcpServer::startReading()
 	if( !socketPtr_.get() || !socketPtr_->is_open())
 		return;
 
-	// Как только запускается клиент, отправляем ему последний отправленный пакет.
-	// Т.е. когда запустится эмулятор (клиент), то ему сразу придет пакет с последним содержимым экрана.
-
-	sendPacket( lastPacketForSending_);
-
 	socketPtr_->async_read_some( boost::asio::buffer( *bufferForReadPtr_),
 		boost::bind( &TcpServer::handleReading, this, bufferForReadPtr_, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 }
@@ -104,8 +99,6 @@ void TcpServer::handleReading( BufferForReadPtr bufferPtr, const boost::system::
 
 void TcpServer::sendPacket( const std::string& packet)
 {
-	lastPacketForSending_ = packet;
-
 	if( !isInit_)
 		return;
 
@@ -115,7 +108,7 @@ void TcpServer::sendPacket( const std::string& packet)
 	try
 	{
 		boost::asio::async_write( *socketPtr_, boost::asio::buffer( packet),
-			boost::bind( &TcpServer::handleWriting, this));
+			boost::bind( &TcpServer::handleWriting, this, boost::asio::placeholders::error));
 	}
 	catch( const std::exception& e)
 	{
@@ -123,7 +116,7 @@ void TcpServer::sendPacket( const std::string& packet)
 	}
 }
 
-void TcpServer::handleWriting()
+void TcpServer::handleWriting( const boost::system::error_code& error)
 {
 
 }

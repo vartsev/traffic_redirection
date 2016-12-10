@@ -7,15 +7,13 @@
 namespace network
 {
 
-TcpClient::TcpClient() : isConnected_( false), ip_(""), port_( 34000), time_( 500)
+TcpClient::TcpClient() : ip_(""), port_( 34000), time_( 500)
 {
 	bufferForReadPtr_ = BufferForReadPtr( new BufferForRead);
 }
 
 TcpClient::~TcpClient()
 {
-	isConnected_ = false;
-
 	if ( socketPtr_.get())
 		socketPtr_->close();
 
@@ -61,9 +59,6 @@ void TcpClient::connect()
 
 	if( error.value() != 0)
 	{
-//		if( configuration::ConfigurationManager::getInstance().isLoggingToConsole())
-//			std::cout <<  boost::posix_time::microsec_clock::local_time() <<" no connection! error: " << error.value() << std::endl;
-		isConnected_ = false;
 		usleep( time_ * 1000);
 
 		connect();
@@ -71,8 +66,6 @@ void TcpClient::connect()
 	}
 
 	startReading();
-
-	isConnected_ = true;
 }
 
 void TcpClient::startReading()
@@ -90,8 +83,7 @@ void TcpClient::handleReading( BufferForReadPtr bufferPtr, const boost::system::
 {
 	if( error.value() != 0)
 	{
-		isConnected_ = false;
-//		connect();
+		connect();
 		return;
 	}
 
@@ -103,8 +95,7 @@ void TcpClient::handleReading( BufferForReadPtr bufferPtr, const boost::system::
 
 	if( !socketPtr_.get() || !socketPtr_->is_open())
 	{
-		isConnected_ = false;
-//		connect();
+		connect();
 		return;
 	}
 
@@ -114,17 +105,13 @@ void TcpClient::handleReading( BufferForReadPtr bufferPtr, const boost::system::
 
 void TcpClient::sendPacket( const std::string& packet)
 {
-	if( !isConnected_ || !socketPtr_.get() || !socketPtr_->is_open())
+	if( !socketPtr_.get() || !socketPtr_->is_open())
 	{
-		isConnected_ = false;
 		return;
 	}
 
 	try
 	{
-//		if( configuration::ConfigurationManager::getInstance().isLoggingToConsole())
-//			std::cout << boost::posix_time::microsec_clock::local_time() << " sendTcpPacket addr: " << ip_ << " size: " << packet.size() << std::endl;
-
 		boost::asio::async_write( *socketPtr_, boost::asio::buffer( packet),
 			boost::bind( &TcpClient::handleWriting, this, boost::asio::placeholders::error));
 	}
@@ -141,12 +128,6 @@ void TcpClient::setHandlerPacket( const CallBack& handleTcpPacket)
 
 void TcpClient::handleWriting( const boost::system::error_code& error)
 {
-	if( error.value() != 0)
-	{
-		std::cout << "handleWriting error: " << error.value() << std::endl;
-		isConnected_ = false;
-		return;
-	}
 }
 
 } /* namespace network */
