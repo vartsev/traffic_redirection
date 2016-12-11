@@ -10,7 +10,6 @@ namespace network
 
 UdpClient::UdpClient():
 		service_( SERVICE),
-		isInit_( false),
 		ip_(""),
 		portForWrite_( 44000),
 		portForRead_( 44000),
@@ -44,7 +43,6 @@ bool UdpClient::init( const std::string& ipAddress, uint16_t portForWrite, uint1
 
 		connect();
 
-		isInit_ = true;
 		return true;
 	}
 	catch( boost::system::system_error& error)
@@ -107,7 +105,7 @@ void UdpClient::handleReceive( BufferForReadPtr bufferPtr, const boost::system::
 
 void UdpClient::sendPacket( const std::string& packet)
 {
-	if( !isInit_)
+	if( !socketPtr_.get() || !socketPtr_->is_open())
 		return;
 
 	socketPtr_->send_to( boost::asio::buffer( packet), partnerEndpoint_);

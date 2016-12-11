@@ -24,7 +24,6 @@ private:
 
 private:
 	boost::asio::io_service& service_;
-	bool isInit_;
 	std::string ip_;
 	uint16_t portForWrite_;
 	uint16_t portForRead_;
