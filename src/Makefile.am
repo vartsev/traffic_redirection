@@ -1,6 +1,16 @@
+include $(top_srcdir)/m4/autotroll.mk
+
+BUILT_SOURCES =																		\
+	$(top_srcdir)/src/userinterface/mainwindow.moc.cpp
+
 lib_LTLIBRARIES = libtrafficredirector.la
-libtrafficredirector_la_CPPFLAGS = -std=c++11 $(GLIBMM_CFLAGS) -I$(top_srcdir)/src
-libtrafficredirector_la_SOURCES = 							\
+libtrafficredirector_la_LIBADD = $(QT_LIBS)
+libtrafficredirector_la_LDFLAGS = $(QT_LDFLAGS)
+libtrafficredirector_la_CPPFLAGS = $(QT_INCPATH) -std=c++11 -I$(top_srcdir)/src
+libtrafficredirector_la_SOURCES = $(BUILT_SOURCES)			\
+		userinterface/mainwindow.h							\
+		userinterface/mainwindow.cpp						\
+		\
 		model/trafficdirectionmanager.h						\
 		model/trafficdirectionmanager.cpp					\
 		model/trafficdirection.h							\
@@ -21,9 +31,9 @@ libtrafficredirector_la_SOURCES = 							\
 
 bin_PROGRAMS=trafficredirector
 
-trafficredirector_LDADD = $(top_builddir)/src/libtrafficredirector.la
-trafficredirector_CPPFLAGS = -std=c++11 -I$(top_srcdir)/src
-trafficredirector_LDFLAGS = $(GLIBMM_LIBS)
+trafficredirector_LDADD = $(QT_LIBS) $(top_builddir)/src/libtrafficredirector.la
+trafficredirector_CPPFLAGS = $(QT_INCPATH) -std=c++11 -I$(top_srcdir)/src
+trafficredirector_LDFLAGS = $(QT_LDFLAGS)
 trafficredirector_SOURCES = main.cpp
 	
 

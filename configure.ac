@@ -8,11 +8,14 @@ AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE()
 
 AC_PROG_CXX
-
+AC_PROG_CC
 AC_LANG([C++])
 AC_PROG_LIBTOOL
 
 ACLOCAL_AMFLAGS = '-I m4'
+
+AT_WITH_QT()
+
 AC_SUBST( install_dir, "/usr/share/traffic_redirector/")
 
 AC_MSG_CHECKING([if release version needed])
