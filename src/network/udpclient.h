@@ -28,6 +28,7 @@ private:
 	uint16_t portForWrite_;
 	uint16_t portForRead_;
 	uint16_t time_;
+	bool isStop_;
 	SocketPtr socketPtr_;
 	HandlePacketCallBack handlePacket_;
 	BufferForReadPtr bufferForReadPtr_;

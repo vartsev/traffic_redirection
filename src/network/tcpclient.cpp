@@ -11,25 +11,25 @@ TcpClient::TcpClient():
 		service_( SERVICE),
 		ip_(""),
 		port_( 34000),
-		time_( 500)
+		time_( 500),
+		isStop_( false)
 {
 	bufferForReadPtr_ = BufferForReadPtr( new BufferForRead);
 }
 
 TcpClient::~TcpClient()
 {
+	isStop_ = true;
 	if ( socketPtr_.get())
 		socketPtr_->close();
 
 	service_.stop();
 
-	ioServiceThread_.detach();
 	ioServiceThread_.interrupt();
-	ioServiceThread_.join();
+	ioServiceThread_.detach();
 
-	connectThread_.detach();
 	connectThread_.interrupt();
-	connectThread_.join();
+	connectThread_.detach();
 }
 
 bool TcpClient::init( const std::string& ipAddress, uint16_t port, uint16_t time)
@@ -45,6 +45,9 @@ bool TcpClient::init( const std::string& ipAddress, uint16_t port, uint16_t time
 
 void TcpClient::connect()
 {
+	if( isStop_)
+		return;
+
 	if ( socketPtr_.get())
 		socketPtr_->close();
 	service_.reset();

@@ -29,6 +29,7 @@ private:
 	std::string ip_;
 	uint16_t port_;
 	uint16_t time_;
+	bool isStop_;
 	HandlePacketCallBack handlePacket_;
 	BufferForReadPtr bufferForReadPtr_;
 

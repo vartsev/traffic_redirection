@@ -29,6 +29,7 @@ private:
 private:
 	boost::asio::io_service& service_;
 	bool isInit_;
+	bool isStop_;
 	HandlePacketCallBack handlePacket_;
 
 	BufferForReadPtr bufferForReadPtr_;

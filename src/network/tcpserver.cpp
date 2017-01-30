@@ -7,22 +7,26 @@ namespace network
 
 TcpServer::TcpServer():
 		service_( SERVICE),
-		isInit_(false)
+		isInit_( false),
+		isStop_( false)
 {
 	bufferForReadPtr_ = BufferForReadPtr( new BufferForRead);
 }
 
 TcpServer::~TcpServer()
 {
+	isInit_ = false;
+	isStop_ = true;
+
 	if( acceptorPtr_.get())
 		acceptorPtr_->close();
 
 	if( socketPtr_.get())
 		socketPtr_->close();
 
-	service_.reset();
+	service_.stop();
 	ioServiceThread_.interrupt();
-	ioServiceThread_.join();
+	ioServiceThread_.detach();
 }
 
 void TcpServer::setHandlerPacket( const HandlePacketCallBack& handlePacket)
@@ -50,6 +54,9 @@ bool TcpServer::init( uint16_t port)
 
 void TcpServer::expectConnection()
 {
+	if( isStop_)
+		return;
+
 	try
 	{
 		if( acceptorPtr_.get())
