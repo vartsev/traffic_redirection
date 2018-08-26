@@ -16,7 +16,7 @@ UdpClient::UdpClient():
 		time_( 500),
 		isStop_( false)
 {
-	bufferForReadPtr_ = BufferForReadPtr( new BufferForRead);
+	bufferForReadPtr_ = BufferPtr( new Buffer);
 }
 
 UdpClient::~UdpClient()
@@ -87,7 +87,7 @@ void UdpClient::connect()
 
 }
 
-void UdpClient::handleReceive( BufferForReadPtr bufferPtr, const boost::system::error_code& error, size_t bytes_transferred)
+void UdpClient::handleReceive( BufferPtr bufferPtr, const boost::system::error_code& error, size_t bytes_transferred)
 {
 	if( error.value() != 0)
 	{
@@ -114,14 +114,36 @@ void UdpClient::handleReceive( BufferForReadPtr bufferPtr, const boost::system::
 void UdpClient::sendPacket( const std::string& packet)
 {
 	if( isStop_ || !socketPtr_.get() || !socketPtr_->is_open())
+	{
+		handleSending_( false, packet);
+		return;
+	}
+
+	socketPtr_->async_send_to( boost::asio::buffer( packet), partnerEndpoint_,
+			boost::bind( &UdpClient::handleSending, this, packet, boost::asio::placeholders::error));
+}
+
+void UdpClient::handleSending( std::string packet, const boost::system::error_code& error)
+{
+	if( !handleSending_)
 		return;
 
-	socketPtr_->send_to( boost::asio::buffer( packet), partnerEndpoint_);
+	if( error.value() == 0)
+	{
+		handleSending_( true, packet);
+	}
+	else
+		handleSending_( false, packet);
 }
 
 void UdpClient::setHandlerPacket( const HandlePacketCallBack& handleUdpPacket)
 {
 	handlePacket_ = handleUdpPacket;
+}
+
+void UdpClient::setHandlerSending( const HandleSendingCallBack& handleSending)
+{
+	handleSending_ = handleSending;
 }
 
 } /* namespace conversion */

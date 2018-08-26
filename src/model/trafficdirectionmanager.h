@@ -16,10 +16,14 @@ public:
 	TrafficDirectionManager();
 	~TrafficDirectionManager();
 
-	bool init();
+	bool initByConfig();
 
 	bool addTrafficDirection( const TrafficDirectionPtr trafficDirection);
 	bool deleteTrafficDirection( const TrafficDirectionPtr trafficDirection);
+	const TrafficDirectionList& getTrafficDirectionList() const;
+
+private:
+	bool handleSending( const Connection&, bool, const std::string&);
 
 private:
 	configuration::ConfigurationManager configurationManager_;

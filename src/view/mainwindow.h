@@ -5,7 +5,7 @@
 #include <QMainWindow>
 #include <QPushButton>
 
-namespace userinterface
+namespace view
 {
 
 class MainWindow : public QMainWindow

@@ -160,21 +160,20 @@ void ConfigurationManager::updateTrafficDirection( const model::TrafficDirection
 	boost::property_tree::ptree part;
 	boost::property_tree::ptree prt;
 
-	for( model::TrafficDirectionList::const_iterator itTraffic = trafficDirectionList.begin();
-			itTraffic != trafficDirectionList.end(); ++itTraffic)
+	for( auto& direction : trafficDirectionList)
 	{
 		prt.clear();
-		prt.add_child( PROTOCOL_PARAMETER_NAME, boost::property_tree::ptree( itTraffic->get()->getSource()->getPtotocol()));
-		prt.add_child( IP_PARAMETER_NAME, boost::property_tree::ptree( itTraffic->get()->getSource()->getIp()));
-		prt.add_child( PORT_PARAMETER_NAME, boost::property_tree::ptree( boost::lexical_cast<std::string>( itTraffic->get()->getSource()->getPort())));
+		prt.add_child( PROTOCOL_PARAMETER_NAME, boost::property_tree::ptree( direction->getSource()->getPtotocol()));
+		prt.add_child( IP_PARAMETER_NAME, boost::property_tree::ptree( direction->getSource()->getIp()));
+		prt.add_child( PORT_PARAMETER_NAME, boost::property_tree::ptree( boost::lexical_cast<std::string>( direction->getSource()->getPort())));
 
 		part.clear();
 		part.add_child( SRC_PARAMETER_NAME, prt);
 
 		arr.clear();
 		{
-			for( model::ConnectionList::const_iterator itDistination = itTraffic->get()->getDistinationSet().begin();
-					itDistination != itTraffic->get()->getDistinationSet().end(); ++itDistination)
+			for( model::ConnectionList::const_iterator itDistination = direction->getDistinationList().begin();
+					itDistination != direction->getDistinationList().end(); ++itDistination)
 			{
 				prt.clear();
 

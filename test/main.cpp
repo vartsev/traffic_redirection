@@ -6,7 +6,7 @@
 
 int main( int argc, char* argv[])
 {
-	network::TrafficDirectionManagerTest test;
+	model::TrafficDirectionManagerTest test;
 //	network::UdpClient udpClient;
 //	network::TcpClient tcpClient;
 //	network::TcpServer tcpServer;

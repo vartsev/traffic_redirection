@@ -17,10 +17,12 @@ public:
 	bool init( const std::string& ipAddress, uint16_t portForWrite, uint16_t portForRead, uint16_t time = 500);
 	void sendPacket( const std::string& packet);
 	void setHandlerPacket( const HandlePacketCallBack& handleUdpPacket);
+	void setHandlerSending( const HandleSendingCallBack& handleSending);
 
 private:
 	void connect();
-	void handleReceive( BufferForReadPtr bufferPtr, const boost::system::error_code& error, size_t bytes_transferred);
+	void handleReceive( BufferPtr bufferPtr, const boost::system::error_code& error, size_t bytes_transferred);
+	void handleSending( std::string packet, const boost::system::error_code& error);
 
 private:
 	boost::asio::io_service& service_;
@@ -31,12 +33,13 @@ private:
 	bool isStop_;
 	SocketPtr socketPtr_;
 	HandlePacketCallBack handlePacket_;
-	BufferForReadPtr bufferForReadPtr_;
+	HandleSendingCallBack handleSending_;
+	BufferPtr bufferForReadPtr_;
 	boost::asio::ip::udp::endpoint partnerEndpoint_;
 	boost::thread ioServiceThread_;
 };
 
-typedef boost::shared_ptr< network::UdpClient> UdpClientPtr;
+typedef std::shared_ptr< network::UdpClient> UdpClientPtr;
 
 } /* namespace network */
 

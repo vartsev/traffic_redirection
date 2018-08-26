@@ -6,9 +6,7 @@ namespace model
 {
 
 TrafficDirection::TrafficDirection( const ConnectionPtr source) : source_( source)
-{
-	source_->setHandlerPacket( boost::bind( &TrafficDirection::handlePacket, this, _1));
-}
+{}
 
 TrafficDirection::~TrafficDirection()
 {}
@@ -18,7 +16,7 @@ const ConnectionPtr TrafficDirection::getSource() const
 	return source_;
 }
 
-const ConnectionList& TrafficDirection::getDistinationSet() const
+const ConnectionList& TrafficDirection::getDistinationList() const
 {
 	return distinationList_;
 }
@@ -26,29 +24,36 @@ const ConnectionList& TrafficDirection::getDistinationSet() const
 void TrafficDirection::addDistination( const ConnectionPtr distination)
 {
 	bool isSame = false;
-	for( ConnectionList::const_iterator it = distinationList_.begin();
-			it!= distinationList_.end(); ++it)
+	for( auto& dist : distinationList_)
 	{
-		if( distination == *it)
+		if( distination == dist)
 			isSame = true;
 	}
 
 	if( !isSame)
+	{
 		distinationList_.push_back( distination);
+	}
 }
 
 void TrafficDirection::deleteDistination( const ConnectionPtr distination)
 {
-	distinationList_.remove( distination);
+	for( auto& dist : distinationList_)
+	{
+		if( distination == dist)
+		{
+			distinationList_.remove( dist);
+			return;
+		}
+	}
+
 }
 
 bool TrafficDirection::handlePacket( const std::string& packet)
 {
-	for( ConnectionList::iterator itDistination = distinationList_.begin();
-			!(itDistination == distinationList_.end());
-				++itDistination)
+	for( auto& distination : distinationList_)
 	{
-		itDistination->get()->sendPacket( packet);
+		distination->sendPacket( packet);
 	}
 
 	return true;
@@ -61,14 +66,12 @@ bool TrafficDirection::operator==( const TrafficDirection& right) const
 	if( !result)
 		return false;
 
-	for( ConnectionList::const_iterator itDistination = distinationList_.begin()
-			; itDistination != distinationList_.end(); ++itDistination)
+	for( auto& distination : distinationList_)
 	{
 		bool isSame = false;
-		for( ConnectionList::const_iterator it = right.getDistinationSet().begin();
-				it != right.getDistinationSet().end(); ++it)
+		for( auto& it : right.getDistinationList())
 		{
-			if(	*itDistination == *it)
+			if(	distination == it)
 			{
 				isSame = true;
 				break;
@@ -79,6 +82,29 @@ bool TrafficDirection::operator==( const TrafficDirection& right) const
 
 		if( !result)
 			return false;
+	}
+
+	return result;
+}
+
+void TrafficDirection::activate( const SendingResult& callback)
+{
+	source_->activate();
+	source_->setHandlerPacket( std::bind( &TrafficDirection::handlePacket, this, std::placeholders::_1));
+	for( auto& distination : distinationList_)
+	{
+		distination->activate();
+		distination->setSendingResult( callback);
+	}
+}
+
+bool TrafficDirection::deactivate()
+{
+	bool result = true;
+	source_->deactivate();
+	for( auto& distination : distinationList_)
+	{
+		result = result && distination->deactivate();
 	}
 
 	return result;

@@ -5,20 +5,19 @@
 #include <stdint.h>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/foreach.hpp>
 
 namespace model
 {
 
 TrafficDirectionManager::TrafficDirectionManager()
 {
-	init();
+	//initByConfig();
 }
 
 TrafficDirectionManager::~TrafficDirectionManager()
 {}
 
-bool TrafficDirectionManager::init()
+bool TrafficDirectionManager::initByConfig()
 {
 	boost::property_tree::ptree& directionList =
 		configurationManager_.getConfigurationTree().
@@ -109,15 +108,19 @@ bool TrafficDirectionManager::init()
 bool TrafficDirectionManager::addTrafficDirection( const TrafficDirectionPtr trafficDirection)
 {
 	bool isSame = false;
-	for( TrafficDirectionList::iterator it = trafficDirectionList_.begin();
-			it!= trafficDirectionList_.end(); ++it)
+	for( auto& direction : trafficDirectionList_)
 	{
-		if( trafficDirection == *it)
+		if( trafficDirection == direction)
 			isSame = true;
 	}
-
 	if( !isSame)
+	{
+		trafficDirection->activate(
+			std::bind( &TrafficDirectionManager::handleSending,
+				this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+
 		trafficDirectionList_.push_back( trafficDirection);
+	}
 	else
 		return false;
 
@@ -128,6 +131,17 @@ bool TrafficDirectionManager::deleteTrafficDirection( const TrafficDirectionPtr 
 {
 	trafficDirectionList_.remove( trafficDirection);
 
+	return true;
+}
+
+const TrafficDirectionList& TrafficDirectionManager::getTrafficDirectionList() const
+{
+	return trafficDirectionList_;
+}
+
+bool TrafficDirectionManager::handleSending( const Connection& connection, bool state, const std::string& packet)
+{
+	std::cout << "TrafficDirectionManager::handleSending: " << connection.getPtotocol() << " " << connection.getPort() << " " << state << " " << packet << std::endl;
 	return true;
 }
 

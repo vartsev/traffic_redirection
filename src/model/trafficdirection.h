@@ -13,12 +13,15 @@ public:
 	~TrafficDirection();
 
 	const ConnectionPtr getSource() const;
-	const ConnectionList& getDistinationSet() const;
+	const ConnectionList& getDistinationList() const;
 
 	void addDistination( const ConnectionPtr distination);
 	void deleteDistination( const ConnectionPtr distination);
 
 	bool operator==( const TrafficDirection& right) const;
+
+	void activate( const SendingResult& handleSending);
+	bool deactivate();
 
 private:
 	bool handlePacket( const std::string& packet);
@@ -26,9 +29,7 @@ private:
 private:
 	ConnectionPtr source_;
 	ConnectionList distinationList_;
-	std::list< int> testList_;
 };
-//typedef std::unique_ptr<TrafficDirection>
 typedef std::shared_ptr<TrafficDirection> TrafficDirectionPtr;
 typedef std::list<TrafficDirectionPtr> TrafficDirectionList;
 

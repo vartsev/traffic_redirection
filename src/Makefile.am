@@ -1,15 +1,15 @@
 include $(top_srcdir)/m4/autotroll.mk
 
 BUILT_SOURCES =																		\
-	$(top_srcdir)/src/userinterface/mainwindow.moc.cpp
+	$(top_srcdir)/src/view/mainwindow.moc.cpp
 
 lib_LTLIBRARIES = libtrafficredirector.la
 libtrafficredirector_la_LIBADD = $(QT_LIBS)
 libtrafficredirector_la_LDFLAGS = $(QT_LDFLAGS)
 libtrafficredirector_la_CPPFLAGS = $(QT_INCPATH) -std=c++11 -I$(top_srcdir)/src
 libtrafficredirector_la_SOURCES = $(BUILT_SOURCES)			\
-		userinterface/mainwindow.h							\
-		userinterface/mainwindow.cpp						\
+		view/mainwindow.h							\
+		view/mainwindow.cpp						\
 		\
 		model/trafficdirectionmanager.h						\
 		model/trafficdirectionmanager.cpp					\
@@ -17,6 +17,9 @@ libtrafficredirector_la_SOURCES = $(BUILT_SOURCES)			\
 		model/trafficdirection.cpp							\
 		model/connection.h									\
 		model/connection.cpp								\
+		\
+		presenter/presenter.h								\
+		presenter/presenter.cpp								\
 		\
 		network/networkprovider.h							\
 		network/tcpclient.h									\

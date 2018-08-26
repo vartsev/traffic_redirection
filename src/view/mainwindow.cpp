@@ -2,13 +2,15 @@
 
 #include<iostream>
 #include <QFileDialog>
+#define ru QString::fromUtf8
 
-namespace userinterface
+namespace view
 {
 
 MainWindow::MainWindow( QWidget *parent)
 {
-	button_ = new QPushButton( "Map", this);
+	this->setWindowTitle( ru("Перенаправление трафика"));
+	button_ = new QPushButton( ru("Кнопка"), this);
 	button_->setGeometry( QRect( QPoint( 10, 10),
 							QSize( 200, 50)));
 

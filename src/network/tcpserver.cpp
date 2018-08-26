@@ -10,7 +10,7 @@ TcpServer::TcpServer():
 		isInit_( false),
 		isStop_( false)
 {
-	bufferForReadPtr_ = BufferForReadPtr( new BufferForRead);
+	bufferForReadPtr_ = BufferPtr( new Buffer);
 }
 
 TcpServer::~TcpServer()
@@ -32,6 +32,11 @@ TcpServer::~TcpServer()
 void TcpServer::setHandlerPacket( const HandlePacketCallBack& handlePacket)
 {
 	handlePacket_ = handlePacket;
+}
+
+void TcpServer::setHandlerSending( const HandleSendingCallBack& handleWriting)
+{
+	handleWriting_ = handleWriting;
 }
 
 bool TcpServer::init( uint16_t port)
@@ -87,7 +92,7 @@ void TcpServer::startReading()
 		boost::bind( &TcpServer::handleReading, this, bufferForReadPtr_, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 }
 
-void TcpServer::handleReading( BufferForReadPtr bufferPtr, const boost::system::error_code& error, size_t bytes_transferred)
+void TcpServer::handleReading( BufferPtr bufferPtr, const boost::system::error_code& error, size_t bytes_transferred)
 {
 	if( !socketPtr_.get() || !socketPtr_->is_open() || error.value() != 0)
 	{
@@ -107,16 +112,16 @@ void TcpServer::handleReading( BufferForReadPtr bufferPtr, const boost::system::
 
 void TcpServer::sendPacket( const std::string& packet)
 {
-	if( !isInit_)
+	if( !isInit_ || !socketPtr_ || !socketPtr_->is_open())
+	{
+		handleWriting_( false, packet);
 		return;
-
-	if( !socketPtr_.get() || !socketPtr_->is_open())
-		return;
+	}
 
 	try
 	{
 		boost::asio::async_write( *socketPtr_, boost::asio::buffer( packet),
-			boost::bind( &TcpServer::handleWriting, this, boost::asio::placeholders::error));
+			boost::bind( &TcpServer::handleWriting, this, packet, boost::asio::placeholders::error));
 	}
 	catch( const std::exception& e)
 	{
@@ -124,9 +129,17 @@ void TcpServer::sendPacket( const std::string& packet)
 	}
 }
 
-void TcpServer::handleWriting( const boost::system::error_code& error)
+void TcpServer::handleWriting( std::string packet, const boost::system::error_code& error)
 {
+	if( !handleWriting_)
+		return;
 
+	if( error.value() == 0)
+	{
+		handleWriting_( true, packet);
+	}
+	else
+		handleWriting_( false, packet);
 }
 
 } /* namespace application */

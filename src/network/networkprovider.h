@@ -9,9 +9,10 @@ namespace network
 
 static boost::asio::io_service SERVICE;
 
-typedef std::function< void ( const std::string)> HandlePacketCallBack;
-typedef std::array< char, 2048> BufferForRead;
-typedef std::shared_ptr< BufferForRead> BufferForReadPtr;
+typedef std::function< bool ( const std::string&)> HandlePacketCallBack;
+typedef std::function< bool ( bool, const std::string&)> HandleSendingCallBack;
+typedef std::array< char, 2048> Buffer;
+typedef std::shared_ptr< Buffer> BufferPtr;
 
 } /* namespace network */
 

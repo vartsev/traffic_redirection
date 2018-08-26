@@ -14,7 +14,7 @@ TcpClient::TcpClient():
 		time_( 500),
 		isStop_( false)
 {
-	bufferForReadPtr_ = BufferForReadPtr( new BufferForRead);
+	bufferForReadPtr_ = BufferPtr( new Buffer);
 }
 
 TcpClient::~TcpClient()
@@ -86,7 +86,7 @@ void TcpClient::startReading()
 	ioServiceThread_ = boost::thread( boost::bind( &boost::asio::io_service::run, &service_));
 }
 
-void TcpClient::handleReading( BufferForReadPtr bufferPtr, const boost::system::error_code& error, size_t bytes_transferred)
+void TcpClient::handleReading( BufferPtr bufferPtr, const boost::system::error_code& error, size_t bytes_transferred)
 {
 	if( error.value() != 0)
 	{
@@ -114,13 +114,14 @@ void TcpClient::sendPacket( const std::string& packet)
 {
 	if( !socketPtr_.get() || !socketPtr_->is_open())
 	{
+		handleWriting_( false, packet);
 		return;
 	}
 
 	try
 	{
 		boost::asio::async_write( *socketPtr_, boost::asio::buffer( packet),
-			boost::bind( &TcpClient::handleWriting, this, boost::asio::placeholders::error));
+			boost::bind( &TcpClient::handleWriting, this, packet, boost::asio::placeholders::error));
 	}
 	catch( const std::exception& e)
 	{
@@ -133,8 +134,22 @@ void TcpClient::setHandlerPacket( const HandlePacketCallBack& handleTcpPacket)
 	handlePacket_ = handleTcpPacket;
 }
 
-void TcpClient::handleWriting( const boost::system::error_code& error)
+void TcpClient::setHandlerSending( const HandleSendingCallBack& handleWriting)
 {
+	handleWriting_ = handleWriting;
+}
+
+void TcpClient::handleWriting( std::string packet, const boost::system::error_code& error)
+{
+	if( !handleWriting_)
+		return;
+
+	if( error.value() == 0)
+	{
+		handleWriting_( true, packet);
+	}
+	else
+		handleWriting_( false, packet);
 }
 
 } /* namespace network */
