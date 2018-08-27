@@ -11,8 +11,8 @@ TcpClient::TcpClient():
 		service_( SERVICE),
 		ip_(""),
 		port_( 34000),
-		time_( 500),
-		isStop_( false)
+		isStop_( false),
+		time_( 500)
 {
 	bufferForReadPtr_ = BufferPtr( new Buffer);
 }
@@ -27,23 +27,20 @@ TcpClient::~TcpClient()
 
 	ioServiceThread_.interrupt();
 	ioServiceThread_.detach();
-
-	connectThread_.interrupt();
-	connectThread_.detach();
 }
 
 bool TcpClient::init( const std::string& ipAddress, uint16_t port, uint16_t time)
 {
-		ip_ = ipAddress;
-		port_ = port;
-		time_ = time;
+	ip_ = ipAddress;
+	port_ = port;
+	time_= time;
 
-		connectThread_ = boost::thread( boost::bind( &TcpClient::connect, this));
+	expectConnection();
 
-		return true;
+	return true;
 }
 
-void TcpClient::connect()
+void TcpClient::expectConnection()
 {
 	if( isStop_)
 		return;
@@ -61,36 +58,28 @@ void TcpClient::connect()
 	boost::asio::ip::tcp::no_delay option( true);
 	socketPtr_->set_option( option);
 
-	boost::system::error_code error;
-	socketPtr_->connect( partnerEndpoint_, error);
+	socketPtr_->async_connect( partnerEndpoint_, boost::bind( &TcpClient::startReading, this, boost::asio::placeholders::error));
+	ioServiceThread_ = boost::thread( boost::bind( &boost::asio::io_service::run, &service_));
+}
 
-	if( error.value() != 0)
+void TcpClient::startReading( const boost::system::error_code& error)
+{
+	if( error.value() != 0 || !socketPtr_.get() || !socketPtr_->is_open())
 	{
-		usleep( time_ * 1000);
-
-		connect();
+		usleep( time_*1000);
+		expectConnection();
 		return;
 	}
 
-	startReading();
-}
-
-void TcpClient::startReading()
-{
-	if( !socketPtr_.get() || !socketPtr_->is_open())
-		return;
-
 	socketPtr_->async_read_some( boost::asio::buffer( *bufferForReadPtr_),
 		boost::bind( &TcpClient::handleReading, this, bufferForReadPtr_, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
-
-	ioServiceThread_ = boost::thread( boost::bind( &boost::asio::io_service::run, &service_));
 }
 
 void TcpClient::handleReading( BufferPtr bufferPtr, const boost::system::error_code& error, size_t bytes_transferred)
 {
 	if( error.value() != 0)
 	{
-		connect();
+		expectConnection();
 		return;
 	}
 
@@ -102,7 +91,7 @@ void TcpClient::handleReading( BufferPtr bufferPtr, const boost::system::error_c
 
 	if( !socketPtr_.get() || !socketPtr_->is_open())
 	{
-		connect();
+		expectConnection();
 		return;
 	}
 

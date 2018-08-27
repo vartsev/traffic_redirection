@@ -13,7 +13,6 @@ UdpClient::UdpClient():
 		ip_(""),
 		portForWrite_( 44000),
 		portForRead_( 44000),
-		time_( 500),
 		isStop_( false)
 {
 	bufferForReadPtr_ = BufferPtr( new Buffer);
@@ -33,7 +32,7 @@ UdpClient::~UdpClient()
 	ioServiceThread_.detach();
 }
 
-bool UdpClient::init( const std::string& ipAddress, uint16_t portForWrite, uint16_t portForRead, uint16_t time)
+bool UdpClient::init( const std::string& ipAddress, uint16_t portForWrite, uint16_t portForRead)
 {
 	if ( socketPtr_.get())
 		socketPtr_->close();
@@ -44,7 +43,6 @@ bool UdpClient::init( const std::string& ipAddress, uint16_t portForWrite, uint1
 		ip_ = ipAddress;
 		portForWrite_ = portForWrite;
 		portForRead_ = portForRead;
-		time_ = time;
 
 		connect();
 		return true;
@@ -70,16 +68,6 @@ void UdpClient::connect()
 	boost::asio::ip::udp::endpoint endpoint( boost::asio::ip::udp::v4(), portForRead_);
 	socketPtr_ = SocketPtr( new boost::asio::ip::udp::socket( service_, endpoint));
 
-	if( !socketPtr_.get() || !socketPtr_->is_open())
-	{
-		usleep( time_ * 1000);
-		ioServiceThread_.interrupt();
-		ioServiceThread_.join();
-
-		connect();
-		return;
-	}
-
 	socketPtr_->async_receive( boost::asio::buffer( *bufferForReadPtr_),
 		boost::bind( &UdpClient::handleReceive, this, bufferForReadPtr_, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 
@@ -101,9 +89,9 @@ void UdpClient::handleReceive( BufferPtr bufferPtr, const boost::system::error_c
 	if( handlePacket_)
 		handlePacket_( packet);
 
-	if( !socketPtr_.get() || !socketPtr_->is_open())
+	if( !socketPtr_ || !socketPtr_->is_open())
 	{
-		init( ip_, portForWrite_, portForRead_, time_);
+		init( ip_, portForWrite_, portForRead_);
 		return;
 	}
 

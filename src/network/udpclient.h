@@ -14,7 +14,7 @@ public:
 	UdpClient();
 	~UdpClient();
 
-	bool init( const std::string& ipAddress, uint16_t portForWrite, uint16_t portForRead, uint16_t time = 500);
+	bool init( const std::string& ipAddress, uint16_t portForWrite, uint16_t portForRead);
 	void sendPacket( const std::string& packet);
 	void setHandlerPacket( const HandlePacketCallBack& handleUdpPacket);
 	void setHandlerSending( const HandleSendingCallBack& handleSending);
@@ -29,7 +29,6 @@ private:
 	std::string ip_;
 	uint16_t portForWrite_;
 	uint16_t portForRead_;
-	uint16_t time_;
 	bool isStop_;
 	SocketPtr socketPtr_;
 	HandlePacketCallBack handlePacket_;

@@ -23,7 +23,7 @@ public:
 private:
 	void expectConnection();
 
-	void startReading();
+	void startReading( const boost::system::error_code& error);
 	void handleReading( BufferPtr bufferPtr, const boost::system::error_code& error, size_t bytes_transferred);
 	void handleWriting( std::string packet, const boost::system::error_code& error);
 

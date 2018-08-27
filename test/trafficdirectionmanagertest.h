@@ -24,34 +24,34 @@ public:
 	void startTest();
 
 	bool handleUdpClientPacket( const std::string& packet);
-//	bool handleTcpClientPacket( const std::string& packet);
-//	bool handleTcpServerPacket( const std::string& packet);
+	bool handleTcpClientPacket( const std::string& packet);
+	bool handleTcpServerPacket( const std::string& packet);
 
 };
 
 bool TrafficDirectionManagerTest::handleUdpClientPacket( const std::string& packet)
 {
-	std::cout << "handle UdpClient packet: " << packet << std::endl;
+//	std::cout << "handle UdpClient packet: " << packet << std::endl;
 	return true;
 }
-//
-//bool TrafficDirectionManagerTest::handleTcpClientPacket( const std::string& packet)
-//{
+
+bool TrafficDirectionManagerTest::handleTcpClientPacket( const std::string& packet)
+{
 //	std::cout << "handle TcpClient packet: " << packet << std::endl;
-//	return true;
-//}
-//
-//bool TrafficDirectionManagerTest::handleTcpServerPacket( const std::string& packet)
-//{
+	return true;
+}
+
+bool TrafficDirectionManagerTest::handleTcpServerPacket( const std::string& packet)
+{
 //	std::cout << "handle TcpServer packet: " << packet << std::endl;
-//	return true;
-//}
+	return true;
+}
 
 void TrafficDirectionManagerTest::startTest()
 {
 	network::UdpClient udpClient;
 	udpClient.init( "127.0.0.1", 3032, 0);
-	udpClient.setHandlerPacket( boost::bind( &TrafficDirectionManagerTest::handleUdpClientPacket, this, _1));
+	udpClient.setHandlerPacket( std::bind( &TrafficDirectionManagerTest::handleUdpClientPacket, this, std::placeholders::_1));
 
 //	network::UdpClient udpClient;
 //	udpClient.init("127.0.0.1", 3030, 3031);
@@ -84,6 +84,7 @@ void TrafficDirectionManagerTest::startTest()
 	direction1->addDistination( dst2);
 	manager.addTrafficDirection( direction1);
 
+	network::TcpServer server;
 	int n = 0;
 	while(true)
 	{
@@ -92,6 +93,13 @@ void TrafficDirectionManagerTest::startTest()
 //		tcpServer.sendPacket( "tcpServer packet " + boost::lexical_cast<std::string>(n));
 		n++;
 		sleep(1);
+
+		if (n == 10)
+		{
+			server.init( 3011);
+			server.setHandlerPacket( std::bind( &TrafficDirectionManagerTest::handleTcpServerPacket, this, std::placeholders::_1));
+
+		}
 	}
 }
 

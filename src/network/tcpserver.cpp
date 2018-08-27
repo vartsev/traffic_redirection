@@ -74,7 +74,7 @@ void TcpServer::expectConnection()
 		socketPtr_ = SocketPtr( new boost::asio::ip::tcp::socket( service_));
 		acceptorPtr_->listen();
 
-		acceptorPtr_->async_accept( *socketPtr_, boost::bind( &TcpServer::startReading, this));
+		acceptorPtr_->async_accept( *socketPtr_, boost::bind( &TcpServer::startReading, this, boost::asio::placeholders::error));
 		ioServiceThread_ = boost::thread( boost::bind( &boost::asio::io_service::run, &service_));
 	}
 	catch( std::exception& e)
@@ -83,9 +83,9 @@ void TcpServer::expectConnection()
 	}
 }
 
-void TcpServer::startReading()
+void TcpServer::startReading( const boost::system::error_code& error)
 {
-	if( !socketPtr_.get() || !socketPtr_->is_open())
+	if( error.value() != 0 || !socketPtr_.get() || !socketPtr_->is_open())
 		return;
 
 	socketPtr_->async_read_some( boost::asio::buffer( *bufferForReadPtr_),

@@ -25,9 +25,9 @@ bool Connection::activate()
 	{
 		udpClientPtr_ = network::UdpClientPtr( new network::UdpClient());
 		if( isSource_)
-			result = udpClientPtr_->init( ip_, 0, port_, configuration::ConfigurationManager::getReconnectionInterval());
+			result = udpClientPtr_->init( ip_, 0, port_);
 		else
-			result = udpClientPtr_->init( ip_, port_, 0, configuration::ConfigurationManager::getReconnectionInterval());
+			result = udpClientPtr_->init( ip_, port_, 0);
 
 		udpClientPtr_->setHandlerSending( std::bind( &Connection::handleSending,
 						this, std::placeholders::_1, std::placeholders::_2));
