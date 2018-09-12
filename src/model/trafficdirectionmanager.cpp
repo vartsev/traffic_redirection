@@ -9,9 +9,9 @@
 namespace model
 {
 
-TrafficDirectionManager::TrafficDirectionManager()
+TrafficDirectionManager::TrafficDirectionManager( const SendingResult& callback):
+		sendingResult_( callback)
 {
-	//initByConfig();
 }
 
 TrafficDirectionManager::~TrafficDirectionManager()
@@ -115,9 +115,8 @@ bool TrafficDirectionManager::addTrafficDirection( const TrafficDirectionPtr tra
 	}
 	if( !isSame)
 	{
-		trafficDirection->activate(
-			std::bind( &TrafficDirectionManager::handleSending,
-				this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+		if( sendingResult_)
+			trafficDirection->activate( sendingResult_);
 
 		trafficDirectionList_.push_back( trafficDirection);
 	}
@@ -137,12 +136,6 @@ bool TrafficDirectionManager::deleteTrafficDirection( const TrafficDirectionPtr 
 const TrafficDirectionList& TrafficDirectionManager::getTrafficDirectionList() const
 {
 	return trafficDirectionList_;
-}
-
-bool TrafficDirectionManager::handleSending( const Connection& connection, bool state, const std::string& packet)
-{
-	std::cout << "TrafficDirectionManager::handleSending: " << connection.getPtotocol() << " " << connection.getPort() << " " << state << " " << packet << std::endl;
-	return true;
 }
 
 } /* namespace model */

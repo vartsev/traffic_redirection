@@ -5,7 +5,7 @@ AC_INIT(traffic_redirector, 0.1)
 
 
 AC_CANONICAL_SYSTEM
-AM_INIT_AUTOMAKE()
+AM_INIT_AUTOMAKE([subdir-objects])
 
 AC_PROG_CXX
 AC_PROG_CC
@@ -32,6 +32,18 @@ AC_ARG_ENABLE([release], [ --enable-release 	enable release version],
 	AC_MSG_RESULT([no])
 	AC_DEFINE( DEBUG)
 	AC_DEFINE_UNQUOTED( CONFIG_DIR, "${srcdir}/config/")
+])
+
+AC_CHECK_LIB([gtest], [main], [],
+[ 
+	echo "gtest failure." 
+	exit -1
+])
+
+AC_CHECK_LIB([gmock], [main], [],
+[ 
+	echo "gmock failure." 
+	exit -1
 ])
 
 AC_CHECK_LIB([boost_system], [main], [],

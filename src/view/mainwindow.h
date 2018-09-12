@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H_
 #define MAINWINDOW_H_
 
+#include "view/iview.h"
 #include <QObject>
 #include <QMainWindow>
 #include <QPushButton>
@@ -8,7 +9,7 @@
 namespace view
 {
 
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow, public IView
 {
 	Q_OBJECT
 

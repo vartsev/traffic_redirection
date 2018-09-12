@@ -13,7 +13,7 @@ namespace model
 class TrafficDirectionManager
 {
 public:
-	TrafficDirectionManager();
+	TrafficDirectionManager( const SendingResult& callback);
 	~TrafficDirectionManager();
 
 	bool initByConfig();
@@ -23,11 +23,8 @@ public:
 	const TrafficDirectionList& getTrafficDirectionList() const;
 
 private:
-	bool handleSending( const Connection&, bool, const std::string&);
-
-private:
+	SendingResult sendingResult_;
 	configuration::ConfigurationManager configurationManager_;
-
 	TrafficDirectionList trafficDirectionList_;
 };
 

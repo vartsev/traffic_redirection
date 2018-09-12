@@ -114,6 +114,9 @@ void TcpServer::sendPacket( const std::string& packet)
 {
 	if( !isInit_ || !socketPtr_ || !socketPtr_->is_open())
 	{
+		if( !handleWriting_)
+			return;
+
 		handleWriting_( false, packet);
 		return;
 	}

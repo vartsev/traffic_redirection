@@ -26,6 +26,7 @@ public:
 	bool handleUdpClientPacket( const std::string& packet);
 	bool handleTcpClientPacket( const std::string& packet);
 	bool handleTcpServerPacket( const std::string& packet);
+	bool handleSending( const model::Connection&, bool, const std::string&);
 
 };
 
@@ -47,6 +48,12 @@ bool TrafficDirectionManagerTest::handleTcpServerPacket( const std::string& pack
 	return true;
 }
 
+bool TrafficDirectionManagerTest::handleSending( const model::Connection& connection, bool state, const std::string& packet)
+{
+	std::cout << "TrafficDirectionManagerTest::handleSending: " << connection.getPtotocol() << " " << connection.getPort() << " " << state << " " << packet << std::endl;
+	return true;
+}
+
 void TrafficDirectionManagerTest::startTest()
 {
 	network::UdpClient udpClient;
@@ -64,7 +71,9 @@ void TrafficDirectionManagerTest::startTest()
 //	tcpServer.setHandlerPacket( boost::bind( &TrafficDirectionManagerTest::handleTcpServerPacket, this, _1));
 
 
-	TrafficDirectionManager manager;
+	TrafficDirectionManager manager( std::bind( &TrafficDirectionManagerTest::handleSending,
+			this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+
 	ConnectionPtr source1 = ConnectionPtr( new Connection(
 		configuration::ConfigurationManager::UDP_PARAMETER_NAME, "127.0.0.1", 3032, true));
 
